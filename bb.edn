@@ -1,1 +1,3 @@
-{:deps {no.larstvei/pulse {:local/root "."}}}
+{:deps {no.larstvei/pulse {:local/root "."}}
+ :tasks {list-definitions pulse.lit.core/list-definitions
+         report-coverage pulse.lit.core/report-coverage}}
