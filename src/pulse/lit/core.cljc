@@ -6,7 +6,7 @@
 
 (def config
   {:lit/lit-paths ["**.md"]
-   :lit/src-paths ["**.clj*" "**.el"]})
+   :lit/src-paths ["**.clj*"]})
 
 (defn expand [paths]
   (->> (mapcat (partial fs/glob ".") paths)
