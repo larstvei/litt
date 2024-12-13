@@ -31,5 +31,10 @@
   ([{:lit/keys [src-paths]}]
    (->> (expand src-paths)
         (mapcat defs/definitions)
-        (map defs/definition-str)
+        (map defs/definition->str)
         (run! println))))
+
+(defn locate-definition
+  ([name] (locate-definition config name))
+  ([config name]
+   ))
