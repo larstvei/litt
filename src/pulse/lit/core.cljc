@@ -34,7 +34,10 @@
         (map defs/definition->str)
         (run! println))))
 
-(defn locate-definition
-  ([name] (locate-definition config name))
-  ([config name]
-   ))
+(defn definition-info
+  ([name] (definition-info config name))
+  ([{:lit/keys [src-paths]} name]
+   (-> (expand src-paths)
+       (defs/locate-definition-by-name name)
+       (meta)
+       (clojure.pprint/pprint))))

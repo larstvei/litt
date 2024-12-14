@@ -17,3 +17,7 @@
 
 (defn definition->str [{:keys [ns name]}]
   (str ns (when name "/") name))
+
+(defn locate-definition-by-name [source-files name]
+  ((set (mapcat definitions source-files))
+   (str->definition name)))
