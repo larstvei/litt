@@ -1,6 +1,7 @@
 (ns pulse.lit.core
   (:require
    [babashka.fs :as fs]
+   [clojure.pprint :as pp]
    [pulse.lit.definitions :as defs]
    [pulse.lit.references :as refs]))
 
@@ -15,7 +16,7 @@
 
 (defn report-coverage
   ([] (report-coverage config))
-  ([{:lit/keys [lit-paths src-paths] :as config}]
+  ([{:lit/keys [lit-paths src-paths]}]
    (let [refs (set (mapcat refs/references (expand lit-paths)))
          defs (group-by :ns (mapcat defs/definitions (expand src-paths)))]
      (doseq [[ns ds] (sort defs)
@@ -40,4 +41,4 @@
    (-> (expand src-paths)
        (defs/locate-definition-by-name name)
        (meta)
-       (clojure.pprint/pprint))))
+       (pp/pprint))))
