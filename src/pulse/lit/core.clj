@@ -3,6 +3,7 @@
    [babashka.fs :as fs]
    [clojure.pprint :as pp]
    [pulse.lit.definitions :as defs]
+   [pulse.lit.lsp :as lsp]
    [pulse.lit.references :as refs]))
 
 (def config
@@ -42,3 +43,7 @@
        (defs/locate-definition-by-name name)
        (meta)
        (pp/pprint))))
+
+(defn lsp
+  ([] (lsp config))
+  ([config] (lsp/lsp-loop config)))
