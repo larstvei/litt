@@ -40,14 +40,14 @@ dependencies as that of the project, as outlined in Section [Project
 setup](#project-setup). In addition, we declare a set of *tasks* that
 can be run from the current project.
 
-`./bb.edn`{.ref-file}
+`./bb.edn`{=ref-file}
 
 The system for literate programming in this book is located under the
 `pulse.lit` prefix.
 
 ## Definitions
 
-`pulse.lit.definitions`{.ref-def}
+`pulse.lit.definitions`{=ref-def}
 
 In order to refer to definitions, we first need a way to identify them.
 Here we some crude assumptions: the first form is a namespace
@@ -65,13 +65,13 @@ by parsing the source file using `edemame`, which conveniently adds
 metadata with the location (line and column) of the parsed expression.
 We keep this metadata, and add the the originating file.
 
-`pulse.lit.definitions/definitions`{.ref-def}
+`pulse.lit.definitions/definitions`{=ref-def}
 
 In addition, we provide simple functions to convert a string to a
 definition map, and vice versa.
 
-`pulse.lit.definitions/str->definition`{.ref-def}
-`pulse.lit.definitions/definition->str`{.ref-def}
+`pulse.lit.definitions/str->definition`{=ref-def}
+`pulse.lit.definitions/definition->str`{=ref-def}
 
 When extracting definitions from source files, we also store valuable
 information as metadata, namely where the definition is stored. We
@@ -84,25 +84,25 @@ is in the set. An important detail here, is that it returns the instance
 of the value that is in the set, meaning that it carries along the
 metadata.
 
-`pulse.lit.definitions/locate-definition-by-name`{.ref-def}
+`pulse.lit.definitions/locate-definition-by-name`{=ref-def}
 
 ## References
 
-`pulse.lit.references`{.ref-def}
+`pulse.lit.references`{=ref-def}
 
 We want to be able to search all literary files and find references to
 definitions. A reference is given as a qualified name to the definition
 denoted as follows:
 
 ```example
-`my.ns/my-definition`{.ref-def}
+`my.ns/my-definition`{=ref-def}
 ```
 
 The following function finds all references to definitions within a
 file, using a simple regex. It returns a definition, as described above,
 with the file in which it originated as metadata.
 
-`pulse.lit.references/references`{.ref-def}
+`pulse.lit.references/references`{=ref-def}
 
 ## A literate language server
 
@@ -132,7 +132,7 @@ primarily that of running the server on some other machine. However, one
 could easily argue the opposite, given that there are very simple tools
 (e.g. `netcat`) that can forward these streams over sockets.
 
-`pulse.lit.lsp`{.ref-def}
+`pulse.lit.lsp`{=ref-def}
 
 A message in LSP starts with a header, giving the number of bytes of the
 message, and optionally the content type of the message. This is similar
@@ -153,34 +153,34 @@ the number of bytes that the content length of the header specified
 passed in order to convert the string keys of the JSON object to Clojure
 keywords.
 
-`pulse.lit.lsp/read-message`{.ref-def}
+`pulse.lit.lsp/read-message`{=ref-def}
 
 Messages are sent using the same basic structure, that is, a header
 containing the content length (in bytes) and the JSON object, separated
 by a blank line. Assuming we receive a message as a Clojure data
 structure, we print the header and message content encoded as JSON.
 
-`pulse.lit.lsp/send-message`{.ref-def}
+`pulse.lit.lsp/send-message`{=ref-def}
 
 ## Exposing literate features with Babashka tasks
 
 In this section, we pull pieces together to expose the features of our
 literate system.
 
-`pulse.lit.core`{.ref-def}
+`pulse.lit.core`{=ref-def}
 
 We keep a `config` that can be seen as a set of global parameters.
 Anything we want to parameterize should be found within the config. It
 specifies where to look for literary files and where to look for source
 files, given as glob pattern.
 
-`pulse.lit.core/config`{.ref-def}
+`pulse.lit.core/config`{=ref-def}
 
 An auxiliary function `expand` takes a collection of paths, where each
 path is a glob expressions, and returns a list of all files that matches
 the glob patterns.
 
-`pulse.lit.core/expand`{.ref-def}
+`pulse.lit.core/expand`{=ref-def}
 
 ### Literary coverage
 
@@ -191,7 +191,7 @@ that any reference is accompanied by text that documents it. The
 function below takes a `config` and displays a report of what
 definitions are covered.
 
-`pulse.lit.core/report-coverage`{.ref-def}
+`pulse.lit.core/report-coverage`{=ref-def}
 
 This function can be invoked as a Babashka task. The Babashka task can
 be invoked by running `bb report-coverage`. In the current state of
@@ -218,7 +218,7 @@ pulse.lit.references                                        2  /  2   ✅
 As the report suggests, we have yet to discuss `list-definitions`. It
 simply lists all the definitions in the project.
 
-`pulse.lit.core/list-definitions`{.ref-def}
+`pulse.lit.core/list-definitions`{=ref-def}
 
 ```
 λ bb list-definitions
@@ -246,14 +246,14 @@ to simplify adding references in a literary file.
   (interactive)
   (let* ((candidates (shell-command-to-string "bb list-definitions"))
          (definition (completing-read "Definition: " (string-lines candidates))))
-    (insert "`" definition "`{.ref-def}")))
+    (insert "`" definition "`{=ref-def}")))
 ```
 ### Definition info
 
 To get information about a definition we expose the task
 `definition-info`, as defined in the following.
 
-`pulse.lit.core/definition-info`{.ref-def}
+`pulse.lit.core/definition-info`{=ref-def}
 
 ```example
 λ bb definition-info pulse.lit.core/definition-info
