@@ -26,7 +26,7 @@
                    status (if (empty? uncovered) "✅" "⚠️️")]]
        (printf "%-60s%-3d/%3d   %s%n" ns (count covered) (count ds) status)
        (doseq [{:keys [ns name]} (sort-by (comp :row meta) uncovered)]
-         (printf "  %-68s%s%n" (if name name ns) "❌"))))))
+         (printf "  | %-66s%s%n" (if name name ns) "❌"))))))
 
 (defn list-definitions
   ([] (list-definitions config))

@@ -208,7 +208,7 @@ pulse.crdt.properties                                       7  /  7   ✅
 pulse.graph                                                 5  /  5   ✅
 pulse.graph-test                                            12 / 12   ✅
 pulse.lit.core                                              4  /  5   ⚠️️
-  list-definitions                                                    ❌
+  | list-definitions                                                  ❌
 pulse.lit.definitions                                       3  /  3   ✅
 pulse.lit.references                                        2  /  2   ✅
 ```
