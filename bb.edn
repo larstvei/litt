@@ -1,4 +1,6 @@
-{:deps {no.larstvei/pulse {:local/root "."}}
+{:deps {no.larstvei/pulse {:local/root "."}
+        borkdude/edamame {:mvn/version "1.4.27"}
+        io.github.teodorlu/pandocir {:git/sha "91f7ec2765b7ba3891fec3069b7fbc2e4177ff9a"}}
  :tasks {definition-info pulse.lit.core/definition-info
          export pulse.lit.core/export
          list-definitions pulse.lit.core/list-definitions
