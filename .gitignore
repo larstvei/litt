@@ -4,3 +4,4 @@
 .direnv/
 .nrepl-port
 result*
+dist
