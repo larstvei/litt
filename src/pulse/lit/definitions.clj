@@ -1,6 +1,7 @@
 (ns pulse.lit.definitions
   (:require
    [clojure.string :as s]
+   [clojure.java.io :as io]
    [edamame.core :as e]))
 
 (defn definitions [source-file]
@@ -18,6 +19,12 @@
 (defn definition->str [{:keys [ns name]}]
   (str ns (when name "/") name))
 
-(defn locate-definition-by-name [source-files name]
-  ((set (mapcat definitions source-files))
-   (str->definition name)))
+(defn locate-definition-by-name [defs name]
+  (defs (str->definition name)))
+
+(defn definition-source [def]
+  (when-let [{:keys [file row end-row]} (meta def)]
+    (->> (line-seq (io/reader file))
+         (drop (dec row))
+         (take (- end-row (dec row)))
+         (s/join "\n"))))

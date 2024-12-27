@@ -1,6 +1,7 @@
 (ns pulse.lit.references
-  (:require [clojure.string :as s]
-            [pulse.lit.definitions :as defs]))
+  (:require
+   [clojure.string :as s]
+   [pulse.lit.definitions :as defs]))
 
 (defn references [literary-file]
   (->> (s/split-lines (slurp literary-file))

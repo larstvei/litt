@@ -37,8 +37,8 @@ The literate system is implemented in Babashka, a fast native Clojure
 scripting runtime. By adding a `bb.edn` file, we set the project up for
 using Babashka. In the following, we tell Babashka to use have the same
 dependencies as that of the project, as outlined in Section [Project
-setup](#project-setup). In addition, we declare a set of *tasks* that
-can be run from the current project.
+setup](./10_meta.html#project-setup). In addition, we declare a set of
+*tasks* that can be run from the current project.
 
 `./bb.edn`{=ref-file}
 
@@ -78,10 +78,11 @@ information as metadata, namely where the definition is stored. We
 create this, perhaps strange-looking, function that finds a definition
 by its name. What makes it a bit strange, is that `definition->str`
 already gives us a definition from its name, but this definition lacks
-the metadata. A Clojure set doubles as a function that returns `nil`
-when given a value that is not in the set, and returns the value if it
-is in the set. An important detail here, is that it returns the instance
-of the value that is in the set, meaning that it carries along the
+metadata. The first argument `defs` is a assumed to be a set of
+definitions. A Clojure set doubles as a function that returns `nil` when
+given a value that is not in the set, and returns the value if it is in
+the set. An important detail here, is that it returns the instance of
+the value that is in the set, meaning that it carries along the
 metadata.
 
 `pulse.lit.definitions/locate-definition-by-name`{=ref-def}
@@ -103,6 +104,10 @@ file, using a simple regex. It returns a definition, as described above,
 with the file in which it originated as metadata.
 
 `pulse.lit.references/references`{=ref-def}
+
+## Book export
+
+
 
 ## A literate language server
 

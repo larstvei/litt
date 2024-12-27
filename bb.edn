@@ -1,5 +1,6 @@
 {:deps {no.larstvei/pulse {:local/root "."}}
  :tasks {definition-info pulse.lit.core/definition-info
+         export pulse.lit.core/export
          list-definitions pulse.lit.core/list-definitions
          report-coverage pulse.lit.core/report-coverage
          lsp pulse.lit.core/lsp}}
