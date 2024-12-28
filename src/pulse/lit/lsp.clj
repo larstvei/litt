@@ -1,7 +1,5 @@
 (ns pulse.lit.lsp
-  (:require
-   [clojure.string :as s]
-   [cheshire.core :as json]))
+  (:require [cheshire.core :as json]))
 
 (defn read-message [rdr]
   (drop-while (complement empty?) (line-seq rdr))
@@ -15,12 +13,25 @@
 
 (defn prepare-response [{:keys [method]}]
   (case method
-    "initialize" [{:capabilities {}}]
-    "shutdown" [nil]
-    "exit" (System/exit 0)
+    "initialize"
+    [{:capabilities
+      {:completionProvider
+       {:triggerCharacters ["`"]}}}]
+
+    "textDocument/completion"
+    [{:isIncomplete false
+      :items []}]
+
+    "shutdown"
+    [nil]
+
+    "exit"
+    (System/exit 0)
+
     nil))
 
 (defn wrap [{:keys [id]} result]
+  (binding [*out* *err*] (prn {:id id, :jsonrpc "2.0", :result result}))
   {:id id, :jsonrpc "2.0", :result result})
 
 (defn handle-message [message]
