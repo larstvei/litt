@@ -13,17 +13,23 @@
     (printf "Content-Length: %d\r\n\r\n%s" length json)
     (flush)))
 
-(defn initialize-response [{:keys [id]}]
-  {:id id :jsonrpc "2.0" :result {:capabilities {}}})
-
-(defn handle-message [{:keys [method] :as message}]
+(defn prepare-response [{:keys [method]}]
   (case method
-    "initialize" [(initialize-response message)]
+    "initialize" [{:capabilities {}}]
+    "shutdown" [nil]
+    "exit" (System/exit 0)
     nil))
+
+(defn wrap [{:keys [id]} result]
+  {:id id, :jsonrpc "2.0", :result result})
+
+(defn handle-message [message]
+  (->> (prepare-response message)
+       (map (partial wrap message))
+       (run! send-message)))
 
 (defn lsp-loop [config]
   (->> (java.io.BufferedReader. *in*)
        (read-message)
        (handle-message)
-       (run! send-message)
        (while true)))

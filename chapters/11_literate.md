@@ -131,11 +131,7 @@ Note that the protocol is completely independent of the means of
 transportation. The most commonly supported means of communicating are
 interprocess communication via `stdin` and `stdout`, and socket
 communication. We will use `stdin` and `stdout`, as it seems to be the
-most common strategy, and it is arguably the simplest. Though it might
-seem we lose some flexibility in choosing interprocess communication,
-primarily that of running the server on some other machine. However, one
-could easily argue the opposite, given that there are very simple tools
-(e.g. `netcat`) that can forward these streams over sockets.
+most common strategy, and it is arguably the simplest.
 
 `pulse.lit.lsp`{=ref-def}
 
@@ -144,7 +140,7 @@ message, and optionally the content type of the message. This is similar
 to the HTTP protocol. The content of the message is a JSON object
 following the [JSON-RPC](https://www.jsonrpc.org/) protocol, which is a
 generic format for remote procedure calls. The header and content is
-separated by a blank line (more specifically `\r\n\r\n`).
+separated by an empty line (more specifically `\r\n\r\n`).
 
 The `line-seq` function takes a reader (that is, an object from which
 bytes can be read), and converts it to a lazy sequence of lines. We
