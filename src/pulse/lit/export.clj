@@ -14,10 +14,8 @@
     (json/parse-string out keyword)))
 
 (defn include-code-block [defs name]
-  (->> (defs/locate-definition-by-name defs name)
-       (defs/definition-source)
-       (assoc {:pandocir/type :pandocir.type/code-block}
-              :pandocir/text)))
+  {:pandocir/type :pandocir.type/code-block
+   :pandocir/text (:source (defs/locate-definition-by-name defs name))})
 
 (defn filters [defs]
   {:pandocir.type/raw-inline

@@ -1,17 +1,7 @@
 (ns pulse.lit.definitions
   (:require
    [clojure.string :as s]
-   [clojure.java.io :as io]
    [edamame.core :as e]))
-
-(defn definitions [source-file]
-  (let [forms (e/parse-string-all (slurp (str source-file)) {:all true})
-        [ns-meta & metas] (->> (map meta forms)
-                               (map #(assoc % :file (str source-file))))
-        [ns-name & names] (map second forms)]
-    (->> (map (partial assoc {:ns ns-name} :name) names)
-         (map #(with-meta %2 %1) metas)
-         (cons (with-meta {:ns ns-name} ns-meta)))))
 
 (defn str->definition [s]
   (zipmap [:ns :name] (map symbol (s/split s #"/"))))
@@ -22,9 +12,18 @@
 (defn locate-definition-by-name [defs name]
   (defs (str->definition name)))
 
-(defn definition-source [def]
-  (when-let [{:keys [file row end-row]} (meta def)]
-    (->> (line-seq (io/reader file))
-         (drop (dec row))
-         (take (- end-row (dec row)))
-         (s/join "\n"))))
+(defn definitions [source-file]
+  (let [content (slurp (str source-file))
+        forms (e/parse-string-all content {:all true})
+        ns-name (second (first forms))
+        lines (vec (s/split-lines content))]
+    (->> (for [form forms
+               :let [{:keys [row end-row]} (meta form)
+                     name (second form)]]
+           [(cond-> {:ns ns-name}
+              (not= (first form) 'ns) (assoc :name name))
+            {:file (str source-file)
+             :row row
+             :end-row end-row
+             :source (s/join "\n" (subvec lines (dec row) end-row))}])
+         (into {}))))

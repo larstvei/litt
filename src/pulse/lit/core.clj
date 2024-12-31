@@ -22,8 +22,8 @@
   ([] (report-coverage config))
   ([{:lit/keys [lit-paths src-paths]}]
    (let [refs (set (mapcat refs/references (expand lit-paths)))
-         defs (group-by :ns (mapcat defs/definitions (expand src-paths)))]
-     (doseq [[ns ds] (sort defs)
+         defs (into {} (map defs/definitions (expand src-paths)))]
+     (doseq [[ns ds] (sort (group-by :ns (sort-by (comp :row defs) (keys defs))))
              :let [covered (filter refs ds)
                    uncovered (remove refs ds)
                    status (if (empty? uncovered) "✅" "⚠️️")]]
@@ -35,22 +35,21 @@
   ([] (list-definitions config))
   ([{:lit/keys [src-paths]}]
    (->> (expand src-paths)
-        (mapcat defs/definitions)
+        (mapcat (comp keys defs/definitions))
         (map defs/definition->str)
         (run! println))))
 
 (defn definition-info
   ([name] (definition-info config name))
   ([{:lit/keys [src-paths]} name]
-   (-> (set (mapcat defs/definitions (expand src-paths)))
+   (-> (into {} (map defs/definitions (expand src-paths)))
        (defs/locate-definition-by-name name)
-       (meta)
        (pp/pprint))))
 
 (defn export
   ([] (export config))
   ([{:lit/keys [lit-paths src-paths css-path export-path]}]
-   (let [defs (set (mapcat defs/definitions (expand src-paths)))]
+   (let [defs (into {} (map defs/definitions (expand src-paths)))]
      (fs/create-dirs (fs/path export-path "css"))
      (fs/copy css-path (fs/path export-path "css" "styles.css")
               {:replace-existing true})
