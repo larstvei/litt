@@ -21,7 +21,7 @@
 (defn report-coverage
   ([] (report-coverage config))
   ([{:lit/keys [lit-paths src-paths]}]
-   (let [refs (set (mapcat refs/references (expand lit-paths)))
+   (let [refs (into {} (map refs/references (expand lit-paths)))
          defs (into {} (map defs/definitions (expand src-paths)))]
      (doseq [[ns ds] (sort (group-by :ns (sort-by (comp :row defs) (keys defs))))
              :let [covered (filter refs ds)

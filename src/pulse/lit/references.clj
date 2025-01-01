@@ -5,6 +5,9 @@
 
 (defn references [literary-file]
   (->> (s/split-lines (slurp literary-file))
-       (keep (partial re-matches #"`(.*)`\{=ref-def\}"))
-       (map (comp defs/str->definition last))
-       (map #(with-meta % {:file (str literary-file)}))))
+       (keep-indexed
+        (fn [i line]
+          (when-let [[_ match] (re-matches #"`(.*)`\{=ref-def\}" line)]
+            {(defs/str->definition match)
+             {:file (str literary-file) :line (inc i)}})))
+       (reduce (partial merge-with conj))))
