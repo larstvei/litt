@@ -23,7 +23,6 @@
            [(cond-> {:ns ns-name}
               (not= (first form) 'ns) (assoc :name name))
             {:file (str source-file)
-             :row row
-             :end-row end-row
+             :line row
              :source (s/join "\n" (subvec lines (dec row) end-row))}])
          (into {}))))
