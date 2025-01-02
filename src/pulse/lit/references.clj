@@ -3,11 +3,9 @@
    [clojure.string :as s]
    [pulse.lit.definitions :as defs]))
 
-(defn references [literary-file]
-  (->> (s/split-lines (slurp literary-file))
+(defn references [{:file/keys [file content]}]
+  (->> (s/split-lines content)
        (keep-indexed
         (fn [i line]
           (when-let [[_ match] (re-matches #"`(.*)`\{=ref-def\}" line)]
-            {(defs/str->definition match)
-             {:file (str literary-file) :line (inc i)}})))
-       (reduce (partial merge-with conj))))
+            {(defs/str->definition match) [{:file file :line (inc i)}]})))))

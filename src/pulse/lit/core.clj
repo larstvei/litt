@@ -38,19 +38,7 @@
 
 (defn export
   ([] (export @db/db))
-  ([{:lit/keys [definitions]
-     :config/keys [css-path export-path lit-paths]}]
-   (fs/create-dirs (fs/path export-path "css"))
-   (fs/copy css-path (fs/path export-path "css" "styles.css")
-            {:replace-existing true})
-   (-> (fn [path]
-         (let [[base _] (fs/split-ext path)
-               out-path (str export-path "/" base ".html")
-               exported (export/lit->html definitions path)]
-           (fs/create-dirs (fs/parent out-path))
-           (spit out-path exported)))
-       (pmap (db/expand lit-paths))
-       (doall))))
+  ([db] (export/export! db)))
 
 (defn lsp
   ([] (lsp @db/db))

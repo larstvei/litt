@@ -12,9 +12,8 @@
 (defn locate-definition-by-name [defs name]
   (defs (str->definition name)))
 
-(defn definitions [source-file]
-  (let [content (slurp (str source-file))
-        forms (e/parse-string-all content {:all true})
+(defn definitions [{:file/keys [file content]}]
+  (let [forms (e/parse-string-all content {:all true})
         ns-name (second (first forms))
         lines (vec (s/split-lines content))]
     (->> (for [form forms
@@ -22,7 +21,7 @@
                      name (second form)]]
            [(cond-> {:ns ns-name}
               (not= (first form) 'ns) (assoc :name name))
-            {:file (str source-file)
+            {:file file
              :line row
              :source (s/join "\n" (subvec lines (dec row) end-row))}])
          (into {}))))

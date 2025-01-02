@@ -1,0 +1,40 @@
+:root {
+    color-scheme: light dark;
+
+    --light-bg: #fafafa;
+    --dark-bg: #2E3440;
+    --light-color: #37474F;
+    --dark-color: #ECEFF4;
+
+    --light-tint: rgba(0, 0, 0, 0.05);
+    --dark-tint: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    width: 75ch;
+    margin: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+    font-family: "Source Serif Pro", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+    text-align: justify;
+    hyphens: auto;
+
+    background-color: light-dark(var(--light-bg), var(--dark-bg));
+    color: light-dark(var(--light-color), var(--dark-color));
+}
+
+pre {
+    background-color: light-dark(var(--light-tint), var(--dark-tint));
+    padding: 1rem;
+    border-radius: 1rem;
+    overflow: scroll;
+    font-size: 80%;
+}
+
+code {
+    font-family: "Source Code Pro", monospace;
+}
