@@ -40,6 +40,5 @@
   ([] (export @db/db))
   ([db] (export/export! db)))
 
-(defn lsp
-  ([] (lsp @db/db))
-  ([db] (lsp/lsp-loop db)))
+(defn lsp []
+  (lsp/lsp-loop))

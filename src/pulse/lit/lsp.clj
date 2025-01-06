@@ -1,5 +1,8 @@
 (ns pulse.lit.lsp
-  (:require [cheshire.core :as json]))
+  (:require
+   [cheshire.core :as json]
+   [pulse.lit.db :as db]
+   [pulse.lit.definitions :as defs]))
 
 (defn read-message [rdr]
   (drop-while (complement empty?) (line-seq rdr))
@@ -20,7 +23,9 @@
 
     "textDocument/completion"
     [{:isIncomplete false
-      :items []}]
+      :items (for [[def info] (:lit/definitions @db/db)
+                   :let [label (defs/definition->str def)]]
+               {:label label :insertText (str label "`{=ref-def}")})}]
 
     "shutdown"
     [nil]
@@ -31,7 +36,6 @@
     nil))
 
 (defn wrap [{:keys [id]} result]
-  (binding [*out* *err*] (prn {:id id, :jsonrpc "2.0", :result result}))
   {:id id, :jsonrpc "2.0", :result result})
 
 (defn handle-message [message]
@@ -39,7 +43,7 @@
        (map (partial wrap message))
        (run! send-message)))
 
-(defn lsp-loop [config]
+(defn lsp-loop []
   (->> (java.io.BufferedReader. *in*)
        (read-message)
        (handle-message)
