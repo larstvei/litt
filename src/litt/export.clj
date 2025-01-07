@@ -37,7 +37,7 @@
     [:meta {:name "author", :content "Lars Tveito"}]
     (for [css-file (keys (:sources/css db))]
       [:link {:rel "stylesheet", :href (str "/" css-file)}])
-    [:title "Pulse"]]
+    [:title (:config/title db)]]
    [:body body]])
 
 (defn md-file->html [{:lit/keys [definitions] :as db} content]

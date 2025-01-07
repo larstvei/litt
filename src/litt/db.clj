@@ -5,10 +5,11 @@
    [litt.references :as refs]))
 
 (def config
-  {:config/lit-paths ["chapters/**.md"]
+  {:config/title "Litt"
+   :config/export-path "dist"
+   :config/lit-paths ["chapters/**.md"]
    :config/src-paths ["{src,test}**.clj*"]
-   :config/css-paths ["css/**.css"]
-   :config/export-path "dist"})
+   :config/css-paths ["css/**.css"]})
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
   (-> (fn [db path file]
