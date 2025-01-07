@@ -1,11 +1,11 @@
-(ns pulse.lit.core
+(ns litt.core
   (:require
    [babashka.fs :as fs]
    [clojure.pprint :as pp]
-   [pulse.lit.db :as db]
-   [pulse.lit.definitions :as defs]
-   [pulse.lit.export :as export]
-   [pulse.lit.lsp :as lsp]))
+   [litt.db :as db]
+   [litt.definitions :as defs]
+   [litt.export :as export]
+   [litt.lsp :as lsp]))
 
 (defn report-coverage
   ([] (report-coverage @db/db))

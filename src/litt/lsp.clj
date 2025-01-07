@@ -1,8 +1,8 @@
-(ns pulse.lit.lsp
+(ns litt.lsp
   (:require
    [cheshire.core :as json]
-   [pulse.lit.db :as db]
-   [pulse.lit.definitions :as defs]))
+   [litt.db :as db]
+   [litt.definitions :as defs]))
 
 (defn read-message [rdr]
   (drop-while (complement empty?) (line-seq rdr))

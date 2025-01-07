@@ -1,7 +1,7 @@
-(ns pulse.lit.references
+(ns litt.references
   (:require
    [clojure.string :as s]
-   [pulse.lit.definitions :as defs]))
+   [litt.definitions :as defs]))
 
 (defn references [{:file/keys [file content]}]
   (->> (s/split-lines content)

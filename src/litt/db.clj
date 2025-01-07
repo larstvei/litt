@@ -1,8 +1,8 @@
-(ns pulse.lit.db
+(ns litt.db
   (:require
    [babashka.fs :as fs]
-   [pulse.lit.definitions :as defs]
-   [pulse.lit.references :as refs]))
+   [litt.definitions :as defs]
+   [litt.references :as refs]))
 
 (def config
   {:config/lit-paths ["chapters/**.md"]

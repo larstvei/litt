@@ -1,11 +1,11 @@
-(ns pulse.lit.export
+(ns litt.export
   (:require
    [babashka.fs :as fs]
    [babashka.process :as process]
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
    [pandocir.core :as pandocir]
-   [pulse.lit.definitions :as defs]))
+   [litt.definitions :as defs]))
 
 (defn call-pandoc [content]
   (let [{:keys [out err]} (process/sh {:in content} "pandoc" "-t" "json")]

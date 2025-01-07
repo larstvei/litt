@@ -1,4 +1,4 @@
-(ns pulse.lit.definitions
+(ns litt.definitions
   (:require
    [clojure.string :as s]
    [edamame.core :as e]))
