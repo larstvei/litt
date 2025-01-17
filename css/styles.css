@@ -38,3 +38,7 @@ pre {
 code {
     font-family: "Source Code Pro", monospace;
 }
+
+.footnote-ref {
+    text-decoration: none;
+}

@@ -5,8 +5,13 @@
    [litt.definitions :as defs]))
 
 (defn read-message [rdr]
-  (drop-while (complement empty?) (line-seq rdr))
-  (json/parse-stream rdr keyword))
+  (let [header (take-while (complement empty?) (line-seq rdr))
+        [[_ n]] (keep #(re-find #"Content-Length: (\d+)" %) header)
+        num-bytes (parse-long n)
+        buf (char-array num-bytes)]
+    (.readLine rdr)
+    (.read rdr buf 0 num-bytes)
+    (json/parse-string (String. buf) keyword)))
 
 (defn send-message [message]
   (let [json (json/generate-string message)
