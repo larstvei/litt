@@ -41,9 +41,8 @@
    [:body body]])
 
 (defn md-file->html [{:lit/keys [definitions] :as db} content]
-  (->> (pandocir/postwalk
-        (pandocir/raw->ir (call-pandoc content))
-        (filters definitions))
+  (->> (pandocir/raw->ir (call-pandoc content))
+       (pandocir/postwalk (filters definitions))
        (pandocir/ir->hiccup)
        (page db)
        hiccup/html
