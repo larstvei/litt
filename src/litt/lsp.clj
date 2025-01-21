@@ -19,26 +19,27 @@
     (printf "Content-Length: %d\r\n\r\n%s" length json)
     (flush)))
 
-(defn prepare-response [{:keys [method]}]
-  (case method
-    "initialize"
-    [{:capabilities
-      {:completionProvider
-       {:triggerCharacters ["`"]}}}]
+(defmulti prepare-response (comp keyword :method))
 
-    "textDocument/completion"
-    [{:isIncomplete false
-      :items (for [[def info] (:lit/definitions @db/db)
-                   :let [label (defs/definition->str def)]]
-               {:label label :insertText (str label "`{=ref-def}")})}]
+(defmethod prepare-response :initialize [_]
+  [{:capabilities
+    {:completionProvider
+     {:triggerCharacters ["`"]}}}])
 
-    "shutdown"
-    [nil]
+(defmethod prepare-response :textDocument/completion [_]
+  [{:isIncomplete false
+    :items (for [[def info] (:lit/definitions @db/db)
+                 :let [label (defs/definition->str def)]]
+             {:label label :insertText (str label "`{=ref-def}")})}])
 
-    "exit"
-    (System/exit 0)
+(defmethod prepare-response :shutdown [_]
+  [nil])
 
-    nil))
+(defmethod prepare-response :exit [_]
+  (System/exit 0))
+
+(defmethod prepare-response :default [_]
+  nil)
 
 (defn wrap [{:keys [id]} result]
   {:id id, :jsonrpc "2.0", :result result})

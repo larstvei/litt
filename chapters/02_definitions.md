@@ -3,14 +3,16 @@
 `litt.definitions`{=ref-def}
 
 In order to refer to definitions, we first need a way to identify them.
-Here we some crude assumptions: the first form is a namespace
-declaration, and every top-level form is a definition, where the second
-element of the form is the name of what is defined. That every top-level
-form is a definition is a convention we have restricted ourselves to
-follow (as mentioned above). That the second element of a form gives the
-name of what is defined seems to be a well-established convention in
-Clojure (and perhaps all Lisps). There are at least no counter examples
-of this in Pulse.
+Here we make some very crude assumptions:
+
+- Every top-level form is a definition
+- The second element of a top-level form is the *name* of what is being defined.
+- The first form of a file defines a namespace.
+- The following top-level forms are definitions.
+
+That the second element of a form gives the name of what is defined
+seems to be a well-established convention in Clojure (and perhaps all
+Lisps).
 
 The following function gathers all definitions in a source file, and
 returns a map of the form `{:ns my.ns :name my-definition}`. It does so
