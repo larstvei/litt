@@ -5,7 +5,7 @@
    [litt.references :as refs]))
 
 (def config
-  {:config/title "Litt"
+  {:config/title "Den lille boken om Litt"
    :config/export-path "dist"
    :config/lit-paths ["chapters/**.md"]
    :config/src-paths ["{src,test}**.clj*"]

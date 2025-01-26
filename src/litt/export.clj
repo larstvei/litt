@@ -8,7 +8,14 @@
    [litt.definitions :as defs]))
 
 (defn call-pandoc [content]
-  (let [{:keys [out err]} (process/sh {:in content} "pandoc" "-t" "json")]
+  (let [{:keys [out err]}
+        (process/sh {:in content}
+                    "pandoc"
+                    "-M" "link-citations=true"
+                    "--citeproc"
+                    "--bibliography" "bibliography.json"
+                    "--csl" "computer-science-education.csl"
+                    "-t" "json")]
     (when-not (empty? err)
       (binding [*out* *err*]
         (println "Pandoc error: " err)))
@@ -30,10 +37,11 @@
               :pandocir/text (slurp text))))})
 
 (defn page [db body]
-  [:html {:lang "en"}
+  [:html {:lang "nb"}
    [:head
     [:meta {:charset "UTF-8"}]
-    [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
+    [:meta {:name "viewport"
+            :content "width=device-width, initial-scale=1.0"}]
     [:meta {:name "author", :content "Lars Tveito"}]
     (for [css-file (keys (:sources/css db))]
       [:link {:rel "stylesheet", :href (str "/" css-file)}])

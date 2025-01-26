@@ -1,2 +1,4 @@
-{:deps {org.clojure/clojure {:mvn/version "1.12.0"}}
+{:deps {org.clojure/clojure {:mvn/version "1.12.0"}
+        borkdude/edamame {:mvn/version "1.4.27"}
+        io.github.teodorlu/pandocir {:git/sha "483fe5f1cf86fc8a3cde57528a143a2662012fee"}}
  :paths ["src"]}

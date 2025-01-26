@@ -1,16 +1,129 @@
-# The Litt literate system
+# Litt -- Et litterært programmeringssystem
 
-The literate system Litt attempts to stay very simple. We can only refer
-to definitions *or* entire files. This is a rather large limitation,
-meaning that we can't have any top-level code that is not a definition,
-and we also can't show only parts of a definition. However, this
-restriction enforces a style where every block of code that is referred
-to has a name (which is given by the definition), and for readability,
-it has to stay *small*.
+*Litt* er et system for «litterær programmering» (eng: *Litterate
+programming*). Et litterært program [@knuth1984] er like fullt et
+*litterært verk* som skal leses og forstås av deg, som et *program* som
+skal kunne instruere en datamaskin om hva den skal gjøre.
 
-The literate system is implemented in Babashka, a fast native Clojure
-scripting runtime. By adding a `bb.edn` file, we set the project up for
-using Babashka. In addition, we declare a set of *tasks* that can be run
-from the current project; more on those later.
+Det hadde vært nærmest pinlig om Litt ble utviklet som et ikke-litterært
+program.^[Merk at vi på norsk går glipp av den engelske motsatsen til
+litterær programmering: *illiterate*.] Så det du leser nå er *Den lille
+boken om Litt*. Den inneholder kildekoden for programmet, forteller
+historien om programmet, og gir teorien om programmet [@naur1985].
+
+## Litt om Litt
+
+Noe som (såvidt jeg vet) skiller Litt fra andre systemer for litterær
+programmering er at det litterære materiale holdes avskilt fra koden.
+Det vil si at det litterære materialet skrives i egne filer i et
+markeringsspråk og koden skrives i ordinære kodefiler. På et vis bryter
+dette noe med tanken om litterær programmering. I tradisjonell litterær
+programmering er mye poenget at teksten og koden er vevd sammen; det er
+en og samme aktivitet.
+
+Litt forsøker ikke å bryte med dette, og vil etter beste evne prøve
+å leve etter idealene som tradisjonell litterær programmering
+etterstreber, men nærmer seg det fra et annet hold. Snarere enn å gjøre
+denne sammenvevingen gjennom å plassere innholdet i de samme filene, vil
+Litt heller være et verktøy som kan brukes til å styrke koblingen mellom
+innhold som ligger i separate filer. Langt mer konkret, så eksponerer
+Litt en LSP-server som bidrar med å skape denne koblingen; hva en
+LSP-server er, og hvordan den bidrar med denne koblingen er temaet for
+[Kapittel 6](/chapters/06_lsp.html).
+
+Motivasjonen for å holde det litterære materiale adskilt fra koden er:
+
+- Kode inneholdt i et markeringsspråk medfører et byggesteg (altså,
+  trekk koden ut før evaluering eller kompilering).
+- God editorstøtte for litterærere systemer er stort sett forbeholdt den
+  eneste sanne editoren.^[Se [Org Mode](https://orgmode.org/) for
+  [Emacs](https://www.gnu.org/software/emacs/).]
+- Veldig mange verktøy for programvareutvikling hviler på antagelsen om
+  at kode ligger i en konvensjonell filstruktur.
+- Ikke mange har erfaring med litterær programmering, som kan heve
+  terskelen for å bidra til et litterært programmeringsprosjekt.
+- Det er enklere å postlitterærisere et program.
+
+Etter min erfaring oppleves Litt litt mindre *inngripende* enn andre
+systemer for litterær programmering. Merk at dette er basert på relativt
+lite erfaring, ettersom jeg kun har skrevet en håndfull litterære
+programmer, og ingen ferdigstilte i Litt, siden Litt er bare litt av hva
+Litt skal bli i skrivende stund.
+
+I Litt skapes kobligen mellom kode og tekst gjennom referanser til
+*navngitte* blokker med kode fra markeringsspråket. Vi belager oss
+på programmeringsspråkets egne mekanismer for å gi navn (som for
+eksempel funksjonsdefinisjoner), snarere enn å referere til linjenummere
+(som krever enorme mengder vedlikehold) eller å skulle legge til
+Litt-spesifikke kommentarer i koden. Et eksempel på en referanse til en
+funksjon i programmeringsspråket Clojure kan se slik ut:
+
+```
+`litt.export/page`{=ref-def}
+```
+
+Her refereres det til en funksjon med navn `page` som ligger i
+navnerommet `litt.export`. Når dette skrives inn i markeringsteksten, så
+vil koden settes inn i den typesatte boken. Gitt at du leser den
+typesatte boken, så vil det vil resultatet se slik ut:
+
+`litt.export/page`{=ref-def}
+
+Nøyaktig hva denne funksjonen gjør er ikke spesielt viktig nå, men skal
+så klart dekkes nøye i [Kapittel 5](/chapters/05_export.html) om
+eksportering.
+
+Det er to store konsekvenser ved å benytte seg av *referanser* til
+fordel for å skrive koden inn i markeringsteksten:
+
+- Vi begrenser oss til å referere til ting som har et entydig navn.
+- Vi ser ikke nødvendigvis koden som refereres til mens vi skriver
+  tekst.
+
+Den første begrensningen er kanskje den mest vesentlige. I Donald Knuths
+originale WEB system for strukturert dokumentasjon [@knuth1983a],
+beskriver han de to definerende programmene for det han året etter døpte
+*Litterate programming*:
+
+> Besides providing a documentation tool, WEB enhances the PASCAL
+> language by providing a rudimentary macro capability together with the
+> ability to permute pieces of the program text, so that a large system
+> can be understood entirely in terms of small modules and their local
+> interrelationships. The TANGLE program is so named because it takes a
+> given web and moves the modules from their web structure into the
+> order required by PASCAL; the advantage of programming in WEB is that
+> the algorithms can be expressed in "untangled" form, with each module
+> explained separately. The WEAVE program is so named because it takes a
+> given web and intertwines the TeX and PASCAL portions contained in
+> each module, then it knits the whole fabric into a structured
+> document. (Get it? Wow.) Perhaps there is some deep connection here
+> with the fact that the German word for "weave" is "web"? and the
+> corresponding Latin imperative is "texe"!
+
+Vakkert! Merk at Knuth fremhever WEB sine makrofasiliteter, som gjør at
+du kan presentere kode i en annen rekkefølge enn den som ender opp i den
+kjørbare programkoden. I Litt holdes teksten og koden adskilt, så det er
+ingen mulighet for å påvirke koden fra markeringsspråket. Dette føles
+imidlertid ikke som et stort offer, ettersom at mer moderne språk som
+regel har gode mekanismer for modulærisering.
+
+## Litt teknisk
+
+Jeg er nødt til å holde Litt lite, ellers blir det aldri skrevet. Det er
+skrevet i og for programmeringsspråket [Clojure](https://clojure.org/)
+[@hickey2008; @hickey2020]. Det er mange egenskaper ved Clojure som gjør
+det godt egnet for dette prosjektet, og her er noen av dem:
+
+- Det er forholds enkelt og lite.
+- Det er helt utrolig enkelt å parse.
+- Jeg elsker å tenke og skrive i Clojure.
+
+Det siste er selvfølgelig det viktigste.
+
+Den lille boken om Litt vil ikke gi en god innføring i Clojure.
+Forhåpentligvis vil du kunne lese innholdet og forstå flyten, strukturen
+og trekke ut teorien om programmet, selv uten forkunnskaper om Clojure.
+
+
 
 `./bb.edn`{=ref-file}

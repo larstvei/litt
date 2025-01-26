@@ -11,10 +11,9 @@
 }
 
 body {
-    width: 75ch;
-    margin: auto;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    max-width: 72ch;
+    margin: 0 auto;
+    padding: 2rem 2rem;
 
     font-family: "Source Serif Pro", serif;
     font-optical-sizing: auto;
@@ -22,6 +21,7 @@ body {
 
     text-align: justify;
     hyphens: auto;
+    line-height: 1.6;
 
     background-color: light-dark(var(--light-bg), var(--dark-bg));
     color: light-dark(var(--light-color), var(--dark-color));
@@ -39,6 +39,15 @@ code {
     font-family: "Source Code Pro", monospace;
 }
 
+h1 {
+    text-align: left;
+}
+
 .footnote-ref {
     text-decoration: none;
+}
+
+.references {
+    text-align: left;
+    word-wrap: break-word;
 }

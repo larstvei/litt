@@ -1,6 +1,4 @@
-{:deps {no.larstvei/litt {:local/root "."}
-        borkdude/edamame {:mvn/version "1.4.27"}
-        io.github.teodorlu/pandocir {:local/root "/Users/larstvei/repos/pandocir/"}}
+{:deps {no.larstvei/litt {:local/root "."}}
  :tasks {definition-info litt.core/definition-info
          export litt.core/export
          list-definitions litt.core/list-definitions
