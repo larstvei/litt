@@ -59,31 +59,19 @@ Litt-spesifikke kommentarer i koden. Et eksempel på en referanse til en
 funksjon i programmeringsspråket Clojure kan se slik ut:
 
 ```
-`litt.export/page`{=ref-def}
+`litt.db/config`{=ref-def}
 ```
 
-Her refereres det til en funksjon med navn `page` som ligger i
-navnerommet `litt.export`. Når dette skrives inn i markeringsteksten, så
-vil koden settes inn i den typesatte boken. Gitt at du leser den
-typesatte boken, så vil det vil resultatet se slik ut:
+Her refereres det til en definisjon av `config` som ligger i navnerommet
+`litt.db`. Når dette skrives inn i markeringsteksten, så vil koden
+settes inn i den typesatte boken. Gitt at du leser den typesatte boken,
+så vil det vil resultatet se slik ut:
 
-`litt.export/page`{=ref-def}
+`litt.db/config`{=ref-def}
 
-Nøyaktig hva denne funksjonen gjør er ikke spesielt viktig nå, men skal
-så klart dekkes nøye i [Kapittel 5](/chapters/05_export.html) om
-eksportering.
-
-Det er to store konsekvenser ved å benytte seg av *referanser* til
-fordel for å skrive koden inn i markeringsteksten:
-
-- Vi begrenser oss til å referere til ting som har et entydig navn.
-- Vi ser ikke nødvendigvis koden som refereres til mens vi skriver
-  tekst.
-
-Den første begrensningen er kanskje den mest vesentlige. I Donald Knuths
-originale WEB system for strukturert dokumentasjon [@knuth1983a],
-beskriver han de to definerende programmene for det han året etter døpte
-*Litterate programming*:
+I Donald Knuths originale WEB system for strukturert dokumentasjon
+[@knuth1983a], beskriver han de to definerende programmene for det han
+året etter døpte *Litterate programming*:
 
 > Besides providing a documentation tool, WEB enhances the PASCAL
 > language by providing a rudimentary macro capability together with the
@@ -101,11 +89,14 @@ beskriver han de to definerende programmene for det han året etter døpte
 > corresponding Latin imperative is "texe"!
 
 Vakkert! Merk at Knuth fremhever WEB sine makrofasiliteter, som gjør at
-du kan presentere kode i en annen rekkefølge enn den som ender opp i den
-kjørbare programkoden. I Litt holdes teksten og koden adskilt, så det er
-ingen mulighet for å påvirke koden fra markeringsspråket. Dette føles
-imidlertid ikke som et stort offer, ettersom at mer moderne språk som
-regel har gode mekanismer for modulærisering.
+du kan organisere kode på en måte som er mer fleksibel en med ordinær
+PASCAL. Siden vi i Litt kun kan refere til navngitte kodeblokker, så gir
+ikke Litt noen mulighet til å påvirke koden fra markeringsspråket. Vi
+kan riktignok presentere kodeblokkene i en annen rekkefølge enn de står
+oppført i koden, men kan ikke sammenlignes med fleksibiliteten WEB
+tilbyr. Det føles imidlertid ikke som et stort offer, ettersom at mer
+moderne språk som regel har bedre mekanismer for modulærisering enn hva
+Pascal kunne tilby på 80-tallet.
 
 ## Litt teknisk
 

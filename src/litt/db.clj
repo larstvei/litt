@@ -8,7 +8,7 @@
   {:config/title "Den lille boken om Litt"
    :config/export-path "dist"
    :config/lit-paths ["chapters/**.md"]
-   :config/src-paths ["{src,test}**.clj*"]
+   :config/src-paths ["{src,test}/**.clj*"]
    :config/css-paths ["css/**.css"]})
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
