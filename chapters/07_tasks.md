@@ -99,3 +99,7 @@ To get information about a definition we expose the task
  :end-col 34,
  :file "src/pulse/lit/core.cljc"}
 ```
+
+## Making them callable from Babashka
+
+`./bb.edn`{=ref-file}

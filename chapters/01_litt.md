@@ -117,4 +117,4 @@ og trekke ut teorien om programmet, selv uten forkunnskaper om Clojure.
 
 
 
-`./bb.edn`{=ref-file}
+
