@@ -69,6 +69,9 @@ så vil det vil resultatet se slik ut:
 
 `litt.db/config`{=ref-def}
 
+Det er ingen større kobling mellom det litterære materialet og koden
+manifestert i filene.
+
 I Donald Knuths originale WEB system for strukturert dokumentasjon
 [@knuth1983a], beskriver han de to definerende programmene for det han
 året etter døpte *Litterate programming*:
@@ -94,9 +97,7 @@ PASCAL. Siden vi i Litt kun kan refere til navngitte kodeblokker, så gir
 ikke Litt noen mulighet til å påvirke koden fra markeringsspråket. Vi
 kan riktignok presentere kodeblokkene i en annen rekkefølge enn de står
 oppført i koden, men kan ikke sammenlignes med fleksibiliteten WEB
-tilbyr. Det føles imidlertid ikke som et stort offer, ettersom at mer
-moderne språk som regel har bedre mekanismer for modulærisering enn hva
-Pascal kunne tilby på 80-tallet.
+tilbyr.
 
 ## Litt teknisk
 
