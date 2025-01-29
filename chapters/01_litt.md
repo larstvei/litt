@@ -1,6 +1,6 @@
 # Litt -- Et litterært programmeringssystem
 
-*Litt* er et system for «litterær programmering» (eng: *Litterate
+*Litt* er et system for «litterær programmering» (eng: *Literate
 programming*). Et litterært program [@knuth1984] er like fullt et
 *litterært verk* som skal leses og forstås av deg, som et *program* som
 skal kunne instruere en datamaskin om hva den skal gjøre.
@@ -74,7 +74,7 @@ manifestert i filene.
 
 I Donald Knuths originale WEB system for strukturert dokumentasjon
 [@knuth1983a], beskriver han de to definerende programmene for det han
-året etter døpte *Litterate programming*:
+året etter døpte *Literate programming*:
 
 > Besides providing a documentation tool, WEB enhances the PASCAL
 > language by providing a rudimentary macro capability together with the
