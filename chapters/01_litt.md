@@ -50,6 +50,8 @@ lite erfaring, ettersom jeg kun har skrevet en håndfull litterære
 programmer, og ingen ferdigstilte i Litt, siden Litt er bare litt av hva
 Litt skal bli i skrivende stund.
 
+### Referanser til navngitte kodeblokker
+
 I Litt skapes kobligen mellom kode og tekst gjennom referanser til
 *navngitte* blokker med kode fra markeringsspråket. Vi belager oss
 på programmeringsspråkets egne mekanismer for å gi navn (som for
@@ -71,6 +73,8 @@ så vil det vil resultatet se slik ut:
 
 Det er ingen større kobling mellom det litterære materialet og koden
 manifestert i filene.
+
+### WEB
 
 I Donald Knuths originale WEB system for strukturert dokumentasjon
 [@knuth1983a], beskriver han de to definerende programmene for det han
@@ -103,8 +107,12 @@ tilbyr.
 
 Jeg er nødt til å holde Litt lite, ellers blir det aldri skrevet. Det er
 skrevet i og for programmeringsspråket [Clojure](https://clojure.org/)
-[@hickey2008; @hickey2020]. Det er mange egenskaper ved Clojure som gjør
-det godt egnet for dette prosjektet, og her er noen av dem:
+[@hickey2008; @hickey2020].
+
+### Clojure
+
+Det er mange egenskaper ved Clojure som gjør det godt egnet for dette
+prosjektet, og her er noen av dem:
 
 - Det er forholds enkelt og lite.
 - Det er helt utrolig enkelt å parse.
@@ -116,6 +124,75 @@ Den lille boken om Litt vil ikke gi en god innføring i Clojure.
 Forhåpentligvis vil du kunne lese innholdet og forstå flyten, strukturen
 og trekke ut teorien om programmet, selv uten forkunnskaper om Clojure.
 
+Selv om Litt vil kun støtter Clojure-kode i første omgang, så er støtte
+for andre språk, og helst være fullstendig språkagnostisk, et langsiktig
+mål.
 
+### Pandoc
 
+Litt bruker [Pandoc](https://pandoc.org/) [@macfarlane2013] for
+å behandle litterære filer. Det gjør at det i utgangspunktet er mulig å
+benytte seg av nesten hvilket som helst markeringsspråk. I skrivende
+stund er det ikke helt klart i hvor stor grad Litt skal belage seg på
+Pandoc for å typesette det litterære programmet.
 
+### Avhengigheter
+
+Litt forsøker i så stor grad som mulig stå på egne ben, som innebærer å
+bruke få og velvalgte biblioteker. For å deklarere avhengighetene til et
+Clojure-program brukes en
+[`deps.edn`](https://clojure.org/reference/deps_edn) fil. Litt sin
+`deps.edn` ser slik ut:
+
+`./deps.edn`{=ref-file}
+
+Den forteller at koden for prosjektet finnes i mappen `src` og at Litt
+er avhengig av en liten håndfull biblioteker.
+
+[`org.clojure/clojure`](https://github.com/clojure/clojure)
+: Dette er Clojure selv, nærmere bestemt version `1.12.0`. Clojure
+  distribueres med andre ord som et Clojure bibliotek!
+
+[`borkdude/edamame`](https://github.com/borkdude/edamame)
+: Et bibliotek for å parse Clojure kode.
+
+[`babashka/fs`](https://github.com/babashka/fs)
+: Et bibliotek for å interagere med filsystemet.
+
+[`babashka/process`](https://github.com/babashka/process)
+: Et bibliotek for å kalle eksterne prosesser.
+
+[`cheshire/cheshire`](https://github.com/dakrone/cheshire)
+: Et bibliotek for å parse [JSON](https://www.json.org/json-en.html).
+
+[`io.github.teodorlu/pandocir`](https://github.com/teodorlu/pandocir)
+: Et bibliotek for å håndtere Pandoc sine abstrakte syntakstrær i
+  Clojure. Dette biblioteket er under aktiv utvikling, så vi
+  spesifiserer en spesifikk git commit, ettersom biblioteket ikke engagn
+  har et versjonsnummer ennå.
+
+Felles for `borkdude/edamame`, `babashka/fs` og `babashka/process` er at
+de er alle skrevet av [Michiel Borkent](https://github.com/borkdude),
+som har gjort enorme bidrag i Clojure-miljøet. Biblioteker utviklet av
+Michiel kan vi stole på.
+
+Biblioteket `cheshire/cheshire` er svært utbredt, og JSON-parsing er en
+typisk ting du antageligvis ikke bør implementere selv.
+
+Til slutt er `io.github.teodorlu/pandocir` utviklet av [Teodor
+Heggelund](https://github.com/teodorlu) og meg. Det er klart det minst
+stabile blant bibliotekene Litt er avhengig av, men til gjengjeldt er
+det et bibliotek som vi har full kontroll over. Ved å bruke biblioteket
+i Litt, så vil jeg kunne oppdage mangler og i den prosessen gjøre
+forbedringer i `pandocir`.
+
+### Babashka
+
+Litt er laget for å kunne kjøres med [Babashka](https://babashka.org/),
+som er en rask interpret for Clojure. Vanligvis kjører Clojure på Javas
+virtuelle maskin, som akkurat litt for lang oppstartstid (ca. et halvt
+sekund) til at det egner seg godt som et kommandolinjeprogram. Babashka
+er en interpret som er implementert i Clojure selv, og kompilert med
+[GraalVM](https://www.graalvm.org/), som resulterer i rask oppstartstid
+og lavt minnebruk. Clojure-programmer som er skrevet for å kunne kjøres
+med Babashka kan fremdeles på Java sin virtuelle maskin.

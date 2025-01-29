@@ -1,6 +1,5 @@
 (ns litt.core
   (:require
-   [babashka.fs :as fs]
    [clojure.pprint :as pp]
    [litt.db :as db]
    [litt.definitions :as defs]

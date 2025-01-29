@@ -4,8 +4,8 @@
    [babashka.process :as process]
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
-   [pandocir.core :as pandocir]
-   [litt.definitions :as defs]))
+   [litt.definitions :as defs]
+   [pandocir.core :as pandocir]))
 
 (defn call-pandoc [content]
   (let [{:keys [out err]}
