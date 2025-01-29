@@ -7,7 +7,7 @@
 (def config
   {:config/title "Den lille boken om Litt"
    :config/export-path "dist"
-   :config/lit-paths ["chapters/**.md"]
+   :config/lit-paths ["kapitler/**.md"]
    :config/src-paths ["{src,test}/**.clj*"]
    :config/css-paths ["css/**.css"]})
 
