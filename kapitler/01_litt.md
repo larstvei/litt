@@ -5,11 +5,10 @@ programming*). Et litterært program [@knuth1984] er like fullt et
 *litterært verk* som skal leses og forstås av deg, som et *program* som
 skal kunne instruere en datamaskin om hva den skal gjøre.
 
-Det hadde vært nærmest pinlig om Litt ble utviklet som et ikke-litterært
-program.^[Merk at vi på norsk går glipp av den engelske motsatsen til
-litterær programmering: *illiterate*.] Så det du leser nå er *Den lille
-boken om Litt*. Den inneholder kildekoden for programmet, forteller
-historien om programmet, og gir teorien om programmet [@naur1985].
+Det hadde vært nærmest pinlig om Litt ble utviklet som et *illitterært*
+program. Så det du leser nå er *Den lille boken om Litt*. Den inneholder
+kildekoden for programmet, forteller historien om programmet, og gir
+teorien om programmet [@naur1985].
 
 ## Litt om Litt
 
