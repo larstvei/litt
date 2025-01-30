@@ -9,7 +9,7 @@
    :config/export-path "dist"
    :config/lit-paths ["kapitler/**.md"]
    :config/src-paths ["{src,test}/**.clj*"]
-   :config/css-paths ["css/**.css"]})
+   :config/css-paths ["resources/css/**.css"]})
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
   (-> (fn [db path file]

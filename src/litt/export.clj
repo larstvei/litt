@@ -13,8 +13,8 @@
                     "pandoc"
                     "-M" "link-citations=true"
                     "--citeproc"
-                    "--bibliography" "bibliography.json"
-                    "--csl" "computer-science-education.csl"
+                    "--bibliography" "resources/bibliography.json"
+                    "--csl" "resources/computer-science-education.csl"
                     "-t" "json")]
     (when-not (empty? err)
       (binding [*out* *err*]
