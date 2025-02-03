@@ -1,4 +1,4 @@
-(ns litt.export
+(ns litt.typesetting
   (:require
    [babashka.fs :as fs]
    [babashka.process :as process]
@@ -56,7 +56,7 @@
        hiccup/html
        str))
 
-(defn export! [{:config/keys [export-path] :sources/keys [css lit] :as db}]
+(defn typeset! [{:config/keys [export-path] :sources/keys [css lit] :as db}]
   (fs/create-dirs export-path)
   (doseq [{:file/keys [file content]} (vals css)]
     (fs/create-dirs (fs/parent (fs/path export-path file)))

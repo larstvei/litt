@@ -1,6 +1,6 @@
 {:deps {no.larstvei/litt {:local/root "."}}
  :tasks {definition-info litt.core/definition-info
-         export litt.core/export
+         typeset litt.core/typeset
          list-definitions litt.core/list-definitions
          report-coverage litt.core/report-coverage
          lsp litt.core/lsp}}

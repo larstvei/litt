@@ -3,7 +3,7 @@
    [clojure.pprint :as pp]
    [litt.db :as db]
    [litt.definitions :as defs]
-   [litt.export :as export]
+   [litt.typesetting :as typesetting]
    [litt.lsp :as lsp]))
 
 (defn report-coverage
@@ -35,9 +35,9 @@
        (defs/locate-definition-by-name name)
        (pp/pprint))))
 
-(defn export
-  ([] (export @db/db))
-  ([db] (export/export! db)))
+(defn typeset
+  ([] (typeset @db/db))
+  ([db] (typesetting/typeset! db)))
 
 (defn lsp []
   (lsp/lsp-loop))
