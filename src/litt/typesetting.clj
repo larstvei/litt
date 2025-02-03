@@ -56,9 +56,9 @@
        hiccup/html
        str))
 
-(defn typeset! [{:config/keys [export-path] :sources/keys [css lit] :as db}]
+(defn typeset! [{:config/keys [export-path] :sources/keys [assets css lit] :as db}]
   (fs/create-dirs export-path)
-  (doseq [{:file/keys [file content]} (vals css)]
+  (doseq [{:file/keys [file content]} (into (vals css) (vals assets))]
     (fs/create-dirs (fs/parent (fs/path export-path file)))
     (spit (str (fs/path export-path file)) content))
   (-> (fn [{:file/keys [file content]}]

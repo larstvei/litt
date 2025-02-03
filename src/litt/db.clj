@@ -34,11 +34,12 @@
         :file/read-at (java.time.Instant/now)}
        (assoc files file)))
 
-(defn initialize-db [{:config/keys [lit-paths src-paths css-paths]}]
+(defn initialize-db [{:config/keys [title lit-paths src-paths css-paths asset-paths] :as config}]
   (-> config
       (assoc :sources/lit (reduce add-file {} (expand lit-paths)))
       (assoc :sources/src (reduce add-file {} (expand src-paths)))
       (assoc :sources/css (reduce add-file {} (expand css-paths)))
+      (assoc :sources/assets (reduce add-file {} (expand asset-paths)))
       (sync-definitions)
       (sync-references)))
 
