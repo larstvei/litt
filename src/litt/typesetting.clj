@@ -14,7 +14,6 @@
                     "-M" "link-citations=true"
                     "--citeproc"
                     "--bibliography" "resources/bibliography.json"
-                    "--csl" "resources/computer-science-education.csl"
                     "-t" "json")]
     (when-not (empty? err)
       (binding [*out* *err*]
