@@ -14,6 +14,7 @@
                     "-M" "link-citations=true"
                     "--citeproc"
                     "--bibliography" "resources/bibliography.json"
+                    "--csl" "resources/apa.csl"
                     "-t" "json")]
     (when-not (empty? err)
       (binding [*out* *err*]
