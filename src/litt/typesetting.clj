@@ -37,24 +37,24 @@
               :pandocir/text (slurp text))))})
 
 (defn page [db body]
-  [:html {:lang "nb"}
-   [:head
-    [:meta {:charset "UTF-8"}]
-    [:meta {:name "viewport"
-            :content "width=device-width, initial-scale=1.0"}]
-    [:meta {:name "author", :content "Lars Tveito"}]
-    (for [{:file/keys [content]} (vals (:sources/css db))]
-      [:style content])
-    [:title (:config/title db)]]
-   [:body body]])
+  (-> [:html {:lang "nb"}
+       [:head
+        [:meta {:charset "UTF-8"}]
+        [:meta {:name "viewport"
+                :content "width=device-width, initial-scale=1.0"}]
+        [:meta {:name "author", :content "Lars Tveito"}]
+        (for [{:file/keys [content]} (vals (:sources/css db))]
+          [:style content])
+        [:title (:config/title db)]]
+       [:body body]]
+      hiccup/html
+      str))
 
 (defn md-file->html [{:lit/keys [definitions] :as db} content]
   (->> (pandocir/raw->ir (call-pandoc content))
        (pandocir/postwalk (filters definitions))
        (pandocir/ir->hiccup)
-       (page db)
-       hiccup/html
-       str))
+       (page db)))
 
 (defn typeset! [{:config/keys [export-path] :sources/keys [assets css lit] :as db}]
   (fs/create-dirs export-path)
