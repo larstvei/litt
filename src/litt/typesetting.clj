@@ -43,8 +43,8 @@
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
     [:meta {:name "author", :content "Lars Tveito"}]
-    (for [css-file (keys (:sources/css db))]
-      [:link {:rel "stylesheet", :href (str "/" css-file)}])
+    (for [{:file/keys [content]} (vals (:sources/css db))]
+      [:style content])
     [:title (:config/title db)]]
    [:body body]])
 
