@@ -4,4 +4,5 @@
         babashka/fs {:mvn/version "0.5.24"}
         babashka/process {:mvn/version "0.5.22"}
         cheshire/cheshire {:mvn/version "5.13.0"}
+        http-kit/http-kit {:mvn/version "2.8.0-RC1"}
         io.github.teodorlu/pandocir {:git/sha "483fe5f1cf86fc8a3cde57528a143a2662012fee"}}}

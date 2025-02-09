@@ -164,6 +164,9 @@ er avhengig av en liten håndfull biblioteker.
 [`cheshire/cheshire`](https://github.com/dakrone/cheshire)
 : Et bibliotek for å parse [JSON](https://www.json.org/json-en.html).
 
+[`http-kit/http-kit`](https://github.com/http-kit/http-kit)
+: En enkel HTTP-server i Clojure.
+
 [`io.github.teodorlu/pandocir`](https://github.com/teodorlu/pandocir)
 : Et bibliotek for å håndtere Pandoc sine abstrakte syntakstrær i
   Clojure. Dette biblioteket er under aktiv utvikling, så vi
