@@ -39,11 +39,6 @@
           :on-close (fn [ch _] (swap! clients disj [lit-path ch]))}
          (server/as-channel req))))
 
-(defn success [body]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body body})
-
 (defn request-handler [db {:keys [uri] :as req}]
   (cond
     (s/starts-with? uri "/sse")
