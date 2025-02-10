@@ -42,6 +42,10 @@ h1 {
     text-align: left;
 }
 
+b, strong, h1, h2, h3, h4, h5 {
+    font-weight: 600;
+}
+
 .footnote-ref {
     text-decoration: none;
 }
