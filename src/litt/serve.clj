@@ -44,7 +44,7 @@
    :headers {"Content-Type" "text/html"}
    :body body})
 
-(defn app [db {:keys [uri] :as req}]
+(defn request-handler [db {:keys [uri] :as req}]
   (cond
     (s/starts-with? uri "/sse")
     (live-reload db req)
@@ -60,4 +60,4 @@
      :body (fallback-body db)}))
 
 (defonce server
-  (server/run-server (fn [req] (app @db/db req)) {:port 8080}))
+  (server/run-server (fn [req] (request-handler @db/db req)) {:port 8080}))
