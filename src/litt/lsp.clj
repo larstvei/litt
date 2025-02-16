@@ -27,7 +27,7 @@
      {:triggerCharacters ["`"]}}}])
 
 (defmethod prepare-response :textDocument/completion [_]
-  [{:isIncomplete false
+  [{:isIncomplete true
     :items (for [[def info] (:lit/definitions @db/db)
                  :let [label (defs/definition->str def)]]
              {:label label :insertText (str label "`{=litt}")})}])
