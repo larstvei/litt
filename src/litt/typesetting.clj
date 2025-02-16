@@ -50,11 +50,10 @@
       hiccup/html
       str))
 
-(defn md-file->html [{:lit/keys [definitions] :as db} content]
-  (->> (pandocir/raw->ir (call-pandoc content))
+(defn md-file->html [{:lit/keys [definitions] :sources/keys [lit] :as db} path]
+  (->> (pandocir/raw->ir (call-pandoc (get-in lit [path :file/content])))
        (pandocir/postwalk (filters definitions))
-       (pandocir/ir->hiccup)
-       (page db)))
+       (pandocir/ir->hiccup)))
 
 (defn typeset! [{:config/keys [export-path] :sources/keys [assets css lit] :as db}]
   (fs/create-dirs export-path)
@@ -64,8 +63,8 @@
   (-> (fn [{:file/keys [file content]}]
         (let [[base _] (fs/split-ext file)
               out-path (str export-path "/" base ".html")
-              exported (md-file->html db content)]
+              exported (md-file->html db file)]
           (fs/create-dirs (fs/parent out-path))
-          (spit out-path exported)))
+          (spit out-path (page db exported))))
       (pmap (vals lit))
       (doall)))
