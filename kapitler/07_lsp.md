@@ -21,7 +21,7 @@ interprocess communication via `stdin` and `stdout`, and socket
 communication. We will use `stdin` and `stdout`, as it seems to be the
 most common strategy, and it is arguably the simplest.
 
-`litt.lsp`{=ref-def}
+`litt.lsp`{=litt}
 
 A message in LSP starts with a header, giving the number of bytes of the
 message, and optionally the content type of the message. This is similar
@@ -42,11 +42,11 @@ keywords.^[Note that we would be able to skip reading the header
 altogether and simply read the next JSON object if [this
 issue](https://github.com/dakrone/cheshire/issues/94) was resolved. ]
 
-`litt.lsp/read-message`{=ref-def}
+`litt.lsp/read-message`{=litt}
 
 Messages are sent using the same basic structure, that is, a header
 containing the content length (in bytes) and the JSON object, separated
 by a blank line. Assuming we receive a message as a Clojure data
 structure, we print the header and message content encoded as JSON.
 
-`litt.lsp/send-message`{=ref-def}
+`litt.lsp/send-message`{=litt}

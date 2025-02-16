@@ -3,20 +3,20 @@
 In this section, we pull pieces together to expose the features of our
 literate system.
 
-`litt.core`{=ref-def}
+`litt.core`{=litt}
 
 We keep a `config` that can be seen as a set of global parameters.
 Anything we want to parameterize should be found within the config. It
 specifies where to look for literary files and where to look for source
 files, given as glob pattern.
 
-`litt.core/config`{=ref-def}
+`litt.core/config`{=litt}
 
 An auxiliary function `expand` takes a collection of paths, where each
 path is a glob expressions, and returns a list of all files that matches
 the glob patterns.
 
-`litt.core/expand`{=ref-def}
+`litt.core/expand`{=litt}
 
 ## Literary coverage
 
@@ -27,7 +27,7 @@ that any reference is accompanied by text that documents it. The
 function below takes a `config` and displays a report of what
 definitions are covered.
 
-`litt.core/report-coverage`{=ref-def}
+`litt.core/report-coverage`{=litt}
 
 This function can be invoked as a Babashka task. The Babashka task can
 be invoked by running `bb report-coverage`. In the current state of
@@ -54,7 +54,7 @@ litt.references                                        2  /  2   ✅
 As the report suggests, we have yet to discuss `list-definitions`. It
 simply lists all the definitions in the project.
 
-`litt.core/list-definitions`{=ref-def}
+`litt.core/list-definitions`{=litt}
 
 ```
 λ bb list-definitions
@@ -82,14 +82,14 @@ to simplify adding references in a literary file.
   (interactive)
   (let* ((candidates (shell-command-to-string "bb list-definitions"))
          (definition (completing-read "Definition: " (string-lines candidates))))
-    (insert "`" definition "`{=ref-def}")))
+    (insert "`" definition "`{=litt}")))
 ```
 ## Definition info
 
 To get information about a definition we expose the task
 `definition-info`, as defined in the following.
 
-`litt.core/definition-info`{=ref-def}
+`litt.core/definition-info`{=litt}
 
 ```example
 λ bb definition-info litt.core/definition-info
@@ -102,4 +102,4 @@ To get information about a definition we expose the task
 
 ## Making them callable from Babashka
 
-`./bb.edn`{=ref-file}
+`./bb.edn`{=litt-file}

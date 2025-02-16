@@ -1,6 +1,6 @@
 # Typesetting
 
-`litt.typesetting`{=ref-def}
+`litt.typesetting`{=litt}
 
 I Litt utgjør både tekst og kode et program. Programmet skal kunne
 kjøres, men minst like viktig skal det kunne leses. Kildefilene i Litt
@@ -37,4 +37,4 @@ dette Litt benytter seg av for å kunne sy sammen det litterære innholdet
 med koden for å typesette et program. Hvis Litt skulle vært enda mindre,
 ville det kun vært et Pandoc filter, og kanskje det hadde vært nok.
 
-`litt.typesetting/call-pandoc`{=ref-def}
+`litt.typesetting/call-pandoc`{=litt}

@@ -29,10 +29,10 @@
   {:pandocir.type/raw-inline
    (fn [{:pandocir/keys [format text]}]
      (case format
-       "ref-def"
+       "litt"
        (include-code-block defs text)
 
-       "ref-file"
+       "litt-file"
        (assoc {:pandocir/type :pandocir.type/code-block}
               :pandocir/text (slurp text))))})
 

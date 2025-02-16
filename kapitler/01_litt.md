@@ -60,7 +60,7 @@ Litt-spesifikke kommentarer i koden. Et eksempel på en referanse til en
 funksjon i programmeringsspråket Clojure kan se slik ut:
 
 ```
-`litt.db/config`{=ref-def}
+`litt.db/config`{=litt}
 ```
 
 Her refereres det til en definisjon av `config` som ligger i navnerommet
@@ -68,7 +68,7 @@ Her refereres det til en definisjon av `config` som ligger i navnerommet
 settes inn i den typesatte boken. Gitt at du leser den typesatte boken,
 så vil det vil resultatet se slik ut:
 
-`litt.db/config`{=ref-def}
+`litt.db/config`{=litt}
 
 Det er ingen større kobling mellom det litterære materialet og koden
 manifestert i filene.
@@ -143,7 +143,7 @@ Clojure-program brukes en
 [`deps.edn`](https://clojure.org/reference/deps_edn) fil. Litt sin
 `deps.edn` ser slik ut:
 
-`./deps.edn`{=ref-file}
+`./deps.edn`{=litt-file}
 
 Den forteller at koden for prosjektet finnes i mappen `src` og at Litt
 er avhengig av en liten håndfull biblioteker.

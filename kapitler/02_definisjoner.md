@@ -1,6 +1,6 @@
 # Definitions
 
-`litt.definitions`{=ref-def}
+`litt.definitions`{=litt}
 
 In order to refer to definitions, we first need a way to identify them.
 Here we make some very crude assumptions:
@@ -20,13 +20,13 @@ by parsing the source file using `edemame`, which conveniently adds
 metadata with the location (line and column) of the parsed expression.
 We keep this metadata, and add the the originating file.
 
-`litt.definitions/definitions`{=ref-def}
+`litt.definitions/definitions`{=litt}
 
 In addition, we provide simple functions to convert a string to a
 definition map, and vice versa.
 
-`litt.definitions/str->definition`{=ref-def}
-`litt.definitions/definition->str`{=ref-def}
+`litt.definitions/str->definition`{=litt}
+`litt.definitions/definition->str`{=litt}
 
 When extracting definitions from source files, we also store valuable
 information as metadata, namely where the definition is stored. We
@@ -40,4 +40,4 @@ the set. An important detail here, is that it returns the instance of
 the value that is in the set, meaning that it carries along the
 metadata.
 
-`litt.definitions/locate-definition-by-name`{=ref-def}
+`litt.definitions/locate-definition-by-name`{=litt}

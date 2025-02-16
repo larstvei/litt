@@ -30,7 +30,7 @@
   [{:isIncomplete false
     :items (for [[def info] (:lit/definitions @db/db)
                  :let [label (defs/definition->str def)]]
-             {:label label :insertText (str label "`{=ref-def}")})}])
+             {:label label :insertText (str label "`{=litt}")})}])
 
 (defmethod prepare-response :shutdown [_]
   [nil])

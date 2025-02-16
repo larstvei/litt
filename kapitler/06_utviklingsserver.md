@@ -18,4 +18,4 @@ bruker det i kombinasjon med et interaktivt programmeringsspråk og i et
 utviklingsmiljø. Dette oppnås gjennom å kontinuerlig typesette boken og
 eksponere resultatet på en lokal utviklingsserver.
 
-`litt.serve`{=ref-def}
+`litt.serve`{=litt}

@@ -7,5 +7,5 @@
   (->> (s/split-lines content)
        (keep-indexed
         (fn [i line]
-          (when-let [[_ match] (re-matches #"`(.*)`\{=ref-def\}" line)]
+          (when-let [[_ match] (re-matches #"`(.*)`\{=litt\}" line)]
             {(defs/str->definition match) [{:file file :line (inc i)}]})))))
