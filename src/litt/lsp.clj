@@ -23,8 +23,8 @@
 
 (defmethod prepare-response :initialize [_]
   [{:capabilities
-    {:completionProvider
-     {:triggerCharacters ["`"]}}}])
+    {:completionProvider {:triggerCharacters ["`"]}
+     :textDocumentSync 2}}])
 
 (defmethod prepare-response :textDocument/completion [_]
   [{:isIncomplete true
