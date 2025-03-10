@@ -28,7 +28,7 @@
       (str)))
 
 (defn position->index [{:keys [line character]} s]
-  (->> (s/split-lines s)
+  (->> (s/split s #"\n" -1)
        (take line)
        (map (comp inc count))
        (reduce + character)))
