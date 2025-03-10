@@ -4,7 +4,8 @@
    [litt.db :as db]
    [litt.definitions :as defs]
    [litt.typesetting :as typesetting]
-   [litt.lsp :as lsp]))
+   [litt.lsp :as lsp]
+   [litt.serve :as serve]))
 
 (defn report-coverage
   ([] (report-coverage @db/db))
@@ -40,4 +41,6 @@
   ([db] (typesetting/typeset! db)))
 
 (defn lsp []
+  (db/initialize-db!)
+  (serve/start-server!)
   (lsp/lsp-loop))

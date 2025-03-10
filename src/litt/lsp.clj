@@ -1,8 +1,11 @@
 (ns litt.lsp
   (:require
+   [babashka.fs :as fs]
    [cheshire.core :as json]
+   [clojure.java.io :as io]
    [litt.db :as db]
-   [litt.definitions :as defs]))
+   [litt.definitions :as defs]
+   [clojure.string :as s]))
 
 (defn read-message [rdr]
   (let [header (take-while (complement empty?) (line-seq rdr))
@@ -19,6 +22,23 @@
     (printf "Content-Length: %d\r\n\r\n%s" length json)
     (flush)))
 
+(defn resolve-uri [uri]
+  (-> (fs/absolutize (fs/path "."))
+      (fs/relativize (fs/path (io/as-url uri)))
+      (str)))
+
+(defn position->index [{:keys [line character]} s]
+  (->> (s/split-lines s)
+       (take line)
+       (map (comp inc count))
+       (reduce + character)))
+
+(defn content-change-function [{:keys [range text]}]
+  (fn [s]
+    (let [start (position->index (:start range) s)
+          end (position->index (:end range) s)]
+      (str (subs s 0 start) text (subs s end)))))
+
 (defmulti prepare-response (comp keyword :method))
 
 (defmethod prepare-response :initialize [_]
@@ -31,6 +51,14 @@
     :items (for [[def info] (:lit/definitions @db/db)
                  :let [label (defs/definition->str def)]]
              {:label label :insertText (str label "`{=litt}")})}])
+
+(defmethod prepare-response :textDocument/didChange [message]
+  (let [uri (get-in message [:params :textDocument :uri])
+        changes (get-in message [:params :contentChanges])]
+    (db/update-content!
+     [:sources/lit (resolve-uri uri)]
+     (apply comp (map content-change-function changes))))
+  [])
 
 (defmethod prepare-response :shutdown [_]
   [nil])

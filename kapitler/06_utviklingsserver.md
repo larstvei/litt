@@ -14,7 +14,7 @@ tastetrykk eller to, og *se* programmet endre seg. Du kan glede deg over
 å se programmet vokse frem.
 
 Litt gir også en interaktiv programmeringsomgivelse, enn så lenge du
-bruker det i kombinasjon med et interaktivt programmeringsspråk og i et
+bruker det i kombinasjon med et interaktivt programmeringsspråk og
 utviklingsmiljø. Dette oppnås gjennom å kontinuerlig typesette boken og
 eksponere resultatet på en lokal utviklingsserver.
 

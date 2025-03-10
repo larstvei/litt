@@ -4,6 +4,8 @@
    [litt.definitions :as defs]
    [litt.references :as refs]))
 
+(defonce db (atom {}))
+
 (def config
   {:config/title "Den lille boken om Litt"
    :config/export-path "dist"
@@ -34,13 +36,21 @@
         :file/read-at (java.time.Instant/now)}
        (assoc files file)))
 
-(defn initialize-db [{:config/keys [title lit-paths src-paths css-paths asset-paths] :as config}]
-  (-> config
-      (assoc :sources/lit (reduce add-file {} (expand lit-paths)))
-      (assoc :sources/src (reduce add-file {} (expand src-paths)))
-      (assoc :sources/css (reduce add-file {} (expand css-paths)))
-      (assoc :sources/assets (reduce add-file {} (expand asset-paths)))
-      (sync-definitions)
-      (sync-references)))
+(defn update-content! [path op]
+  (swap! db (fn [db] (sync-references (update-in db (conj path :file/content) op)))))
 
-(defonce db (atom (initialize-db config)))
+(defn initialize-db! []
+  (let [{:config/keys [title lit-paths src-paths css-paths asset-paths]} config
+        initial-state
+        (-> config
+            (assoc :sources/lit (reduce add-file {} (expand lit-paths)))
+            (assoc :sources/src (reduce add-file {} (expand src-paths)))
+            (assoc :sources/css (reduce add-file {} (expand css-paths)))
+            (assoc :sources/assets (reduce add-file {} (expand asset-paths)))
+            (sync-definitions)
+            (sync-references))]
+    (reset! db initial-state)))
+
+(comment
+  (initialize-db! config)
+  )
