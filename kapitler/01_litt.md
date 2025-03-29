@@ -170,8 +170,8 @@ er avhengig av en liten håndfull biblioteker.
 [`io.github.teodorlu/pandocir`](https://github.com/teodorlu/pandocir)
 : Et bibliotek for å håndtere Pandoc sine abstrakte syntakstrær i
   Clojure. Dette biblioteket er under aktiv utvikling, så vi
-  spesifiserer en spesifikk git commit, ettersom biblioteket ikke engagn
-  har et versjonsnummer ennå.
+  spesifiserer en spesifikk git commit, ettersom biblioteket ikke har et
+  versjonsnummer ennå.
 
 Felles for `borkdude/edamame`, `babashka/fs` og `babashka/process` er at
 de er alle skrevet av [Michiel Borkent](https://github.com/borkdude),
@@ -179,7 +179,9 @@ som har gjort enorme bidrag i Clojure-miljøet. Biblioteker utviklet av
 Michiel kan vi stole på.
 
 Biblioteket `cheshire/cheshire` er svært utbredt, og JSON-parsing er en
-typisk ting du antageligvis ikke bør implementere selv.
+typisk ting du antageligvis ikke bør implementere selv. Helt tilsvarende
+er `http-kit/http-kit` et svært utbredt bibliotek som gir en minimal og
+robust HTTP-server.
 
 Til slutt er `io.github.teodorlu/pandocir` utviklet av [Teodor
 Heggelund](https://github.com/teodorlu) og meg. Det er klart det minst
@@ -192,9 +194,10 @@ forbedringer i `pandocir`.
 
 Litt er laget for å kunne kjøres med [Babashka](https://babashka.org/),
 som er en rask interpret for Clojure. Vanligvis kjører Clojure på Javas
-virtuelle maskin, som akkurat litt for lang oppstartstid (ca. et halvt
-sekund) til at det egner seg godt som et kommandolinjeprogram. Babashka
-er en interpret som er implementert i Clojure selv, og kompilert med
-[GraalVM](https://www.graalvm.org/), som resulterer i rask oppstartstid
-og lavt minnebruk. Clojure-programmer som er skrevet for å kunne kjøres
-med Babashka kan fremdeles på Java sin virtuelle maskin.
+virtuelle maskin, som har akkurat litt for lang oppstartstid (ca. et
+halvt sekund) til at det egner seg godt som et kommandolinjeprogram.
+Babashka er en interpret som er implementert i Clojure selv, og er
+kompilert med [GraalVM](https://www.graalvm.org/), som resulterer i rask
+oppstartstid og lavt minnebruk. Clojure-programmer som er skrevet for
+å kunne kjøres med Babashka kan fremdeles kjøre på Java sin virtuelle
+maskin.
