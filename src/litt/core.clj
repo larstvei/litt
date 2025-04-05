@@ -8,7 +8,7 @@
    [litt.serve :as serve]))
 
 (defn report-coverage
-  ([] (report-coverage @db/db))
+  ([] (report-coverage (db/initialize-db!)))
   ([{:lit/keys [references definitions]}]
    (doseq [[ns ds] (->> (keys definitions)
                         (sort-by (comp :line definitions))
@@ -22,7 +22,7 @@
        (printf "  | %-66s%s%n" (if name name ns) "❌")))))
 
 (defn list-definitions
-  ([] (list-definitions @db/db))
+  ([] (list-definitions (db/initialize-db!)))
   ([{:lit/keys [definitions]}]
    (->> definitions
         (keys)
@@ -30,14 +30,14 @@
         (run! println))))
 
 (defn definition-info
-  ([name] (definition-info @db/db name))
+  ([name] (definition-info (db/initialize-db!) name))
   ([{:lit/keys [definitions]} name]
    (-> definitions
        (defs/locate-definition-by-name name)
        (pp/pprint))))
 
 (defn typeset
-  ([] (typeset @db/db))
+  ([] (typeset (db/initialize-db!)))
   ([db] (typesetting/typeset! db)))
 
 (defn lsp []
