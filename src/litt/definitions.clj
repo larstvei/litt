@@ -4,19 +4,20 @@
    [edamame.core :as e]))
 
 (defn str->definition [s]
-  (zipmap [:ns :name :dispatch]
-          (map read-string (s/split s #"/" 3))))
+  (->> (map symbol (s/split s #"/|@"))
+       (zipmap [:ns :name :dispatch])))
 
 (defn definition->str [{:keys [ns name dispatch]}]
-  (str ns (when name "/") name (when dispatch "/") dispatch))
+  (str ns (when name "/") name (when dispatch "@") dispatch))
 
 (defn locate-definition-by-name [defs name]
   (defs (str->definition name)))
 
 (defn form->definition [ns-name [def name dispatch]]
-  (cond-> {:ns ns-name}
-    (not= def 'ns) (assoc :name name)
-    (= def 'defmethod) (assoc :dispatch dispatch)))
+  (when (symbol? name)
+    (cond-> {:ns ns-name}
+      (not= def 'ns) (assoc :name name)
+      (= def 'defmethod) (assoc :dispatch dispatch))))
 
 (defn definition-info [file lines form]
   (let [{:keys [row end-row]} (meta form)]
@@ -29,7 +30,7 @@
         ns-name (second (first forms))
         lines (vec (s/split-lines content))]
     (-> (fn [defs form]
-          (let [key (form->definition ns-name form)
-                val (definition-info file lines form)]
-            (assoc defs key val)))
+          (if-let [key (form->definition ns-name form)]
+            (assoc defs key (definition-info file lines form))
+            defs))
         (reduce {} forms))))
