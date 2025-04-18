@@ -1,7 +1,7 @@
 (ns litt.db
   (:require
    [babashka.fs :as fs]
-   [litt.definitions :as defs]
+   [litt.src :as src]
    [litt.references :as refs]))
 
 (defonce db (atom {}))
@@ -15,7 +15,7 @@
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
   (-> (fn [db path file]
-        (update db :lit/definitions merge (defs/definitions file)))
+        (update db :lit/definitions merge (src/definitions file)))
       (reduce-kv db src)))
 
 (defn sync-references [{:sources/keys [lit] :as db}]

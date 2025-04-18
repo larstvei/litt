@@ -4,7 +4,7 @@
    [cheshire.core :as json]
    [clojure.java.io :as io]
    [litt.db :as db]
-   [litt.definitions :as defs]
+   [litt.src :as src]
    [clojure.string :as s]))
 
 (defn read-message [rdr]
@@ -49,7 +49,7 @@
 (defmethod prepare-response :textDocument/completion [_]
   [{:isIncomplete true
     :items (for [[def info] (:lit/definitions @db/db)
-                 :let [label (defs/definition->str def)]]
+                 :let [label (src/definition->str def)]]
              {:label label :insertText (str label "`{=litt}")})}])
 
 (defmethod prepare-response :textDocument/didChange [message]

@@ -4,7 +4,7 @@
    [babashka.process :as process]
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
-   [litt.definitions :as defs]
+   [litt.src :as src]
    [pandocir.core :as pandocir]))
 
 (defn call-pandoc [content]
@@ -23,7 +23,7 @@
 
 (defn include-code-block [defs name]
   {:pandocir/type :pandocir.type/code-block
-   :pandocir/text (:source (defs/locate-definition-by-name defs name))})
+   :pandocir/text (:source (src/locate-definition-by-name defs name))})
 
 (defn filters [defs]
   {:pandocir.type/raw-inline

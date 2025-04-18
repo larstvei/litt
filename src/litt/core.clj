@@ -2,7 +2,7 @@
   (:require
    [clojure.pprint :as pp]
    [litt.db :as db]
-   [litt.definitions :as defs]
+   [litt.src :as src]
    [litt.typesetting :as typesetting]
    [litt.lsp :as lsp]
    [litt.serve :as serve]))
@@ -26,14 +26,14 @@
   ([{:lit/keys [definitions]}]
    (->> definitions
         (keys)
-        (map defs/definition->str)
+        (map src/definition->str)
         (run! println))))
 
 (defn definition-info
   ([name] (definition-info (db/initialize-db!) name))
   ([{:lit/keys [definitions]} name]
    (-> definitions
-       (defs/locate-definition-by-name name)
+       (src/locate-definition-by-name name)
        (pp/pprint))))
 
 (defn typeset
