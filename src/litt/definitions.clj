@@ -10,9 +10,6 @@
 (defn definition->str [{:keys [ns name dispatch]}]
   (str ns (when name "/") name (when dispatch "@") dispatch))
 
-(defn locate-definition-by-name [defs name]
-  (defs (str->definition name)))
-
 (defn form->definition [ns-name [def name dispatch]]
   (when (symbol? name)
     (cond-> {:ns ns-name}
@@ -34,3 +31,7 @@
             (assoc defs key (definition-info file lines form))
             defs))
         (reduce {} forms))))
+
+(defn locate-definition-by-name [defs name]
+  (defs (str->definition name)))
+
