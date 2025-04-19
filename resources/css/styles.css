@@ -3,6 +3,7 @@
 
     --bg: light-dark(#fafafa, #2E3440);
     --fg: light-dark(#37474F, #ECEFF4);
+    --primary: light-dark(#673AB7, #81A1C1);
     --tint: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 }
 
@@ -40,6 +41,18 @@ h1 {
 
 b, strong, h1, h2, h3, h4, h5 {
     font-weight: 600;
+}
+
+a {
+    color: var(--primary);
+    text-underline-offset: .15em;
+    text-decoration-color: transparent;
+    transition: text-decoration-color .25s ease;
+}
+
+a:hover,
+a:focus-visible {
+    text-decoration-color: currentColor;
 }
 
 .columns {
