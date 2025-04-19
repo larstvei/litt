@@ -18,9 +18,9 @@
 
 (defn definition-info [file lines form]
   (let [{:keys [row end-row]} (meta form)]
-    {:file file
-     :line row
-     :source (s/join "\n" (subvec lines (dec row) end-row))}))
+    {:def/file file
+     :def/start row
+     :def/lines (subvec lines (dec row) end-row)}))
 
 (defn definitions [{:file/keys [file content]}]
   (let [forms (e/parse-string-all content {:all true})
@@ -31,7 +31,3 @@
             (assoc defs key (definition-info file lines form))
             defs))
         (reduce {} forms))))
-
-(defn locate-definition-by-name [defs name]
-  (defs (str->definition name)))
-

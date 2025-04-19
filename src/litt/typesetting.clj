@@ -5,7 +5,8 @@
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
    [litt.src :as src]
-   [pandocir.core :as pandocir]))
+   [pandocir.core :as pandocir]
+   [litt.db :as db]))
 
 (defn call-pandoc [content]
   (let [{:keys [out err]}
@@ -21,16 +22,16 @@
         (println "Pandoc error: " err)))
     (json/parse-string out keyword)))
 
-(defn include-code-block [defs name]
+(defn include-code-block [db name]
   {:pandocir/type :pandocir.type/code-block
-   :pandocir/text (:source (src/locate-definition-by-name defs name))})
+   :pandocir/text (db/definition-source db name)})
 
-(defn filters [defs]
+(defn filters [db]
   {:pandocir.type/raw-inline
    (fn [{:pandocir/keys [format text]}]
      (case format
        "litt"
-       (include-code-block defs text)
+       (include-code-block db text)
 
        "litt-file"
        (assoc {:pandocir/type :pandocir.type/code-block}
@@ -50,9 +51,9 @@
       hiccup/html
       str))
 
-(defn md-file->html [{:lit/keys [definitions] :sources/keys [lit] :as db} path]
+(defn md-file->html [{:sources/keys [lit] :as db} path]
   (->> (pandocir/raw->ir (call-pandoc (get-in lit [path :file/content])))
-       (pandocir/postwalk (filters definitions))
+       (pandocir/postwalk (filters db))
        (pandocir/ir->hiccup)))
 
 (defn typeset! [{:config/keys [export-path] :sources/keys [assets css lit] :as db}]

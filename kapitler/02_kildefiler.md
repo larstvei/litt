@@ -194,4 +194,4 @@ formen er en metode. Under er noen enkle tester for funksjonen.
 
 `litt.src/definition-info`{=litt}
 `litt.src/definitions`{=litt}
-`litt.src/locate-definition-by-name`{=litt}
+

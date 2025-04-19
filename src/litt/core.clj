@@ -30,11 +30,9 @@
         (run! println))))
 
 (defn definition-info
-  ([name] (definition-info (db/initialize-db!) name))
-  ([{:lit/keys [definitions]} name]
-   (-> definitions
-       (src/locate-definition-by-name name)
-       (pp/pprint))))
+  ([def-name-str] (definition-info (db/initialize-db!) def-name-str))
+  ([db def-name-str]
+   (pp/pprint (db/get-definition db def-name-str))))
 
 (defn typeset
   ([] (typeset (db/initialize-db!)))

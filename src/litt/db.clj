@@ -1,8 +1,9 @@
 (ns litt.db
   (:require
    [babashka.fs :as fs]
-   [litt.src :as src]
-   [litt.references :as refs]))
+   [clojure.string :as s]
+   [litt.references :as refs]
+   [litt.src :as src]))
 
 (defonce db (atom {}))
 
@@ -36,6 +37,14 @@
         :file/read-at (java.time.Instant/now)}
        (assoc files file)))
 
+(defn get-definition [db def-name-str]
+  (->> [:lit/definitions (src/str->definition def-name-str)]
+       (get-in db)))
+
+(defn definition-source [db def-name-str]
+  (->> (:def/lines (get-definition db def-name-str))
+       (s/join "\n")))
+
 (defn update-content! [path op]
   (swap! db (fn [db] (sync-references (update-in db (conj path :file/content) op)))))
 
@@ -52,5 +61,5 @@
     (reset! db initial-state)))
 
 (comment
-  (initialize-db! config)
+  (initialize-db!)
   )
