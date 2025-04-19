@@ -58,13 +58,13 @@
 
 (defn typeset! [{:config/keys [export-path] :sources/keys [assets css lit] :as db}]
   (fs/create-dirs export-path)
-  (doseq [{:file/keys [file content]} (into (vals css) (vals assets))]
-    (fs/create-dirs (fs/parent (fs/path export-path file)))
-    (spit (str (fs/path export-path file)) content))
-  (-> (fn [{:file/keys [file content]}]
-        (let [[base _] (fs/split-ext file)
+  (doseq [{:file/keys [filename content]} (into (vals css) (vals assets))]
+    (fs/create-dirs (fs/parent (fs/path export-path filename)))
+    (spit (str (fs/path export-path filename)) content))
+  (-> (fn [{:file/keys [filename content]}]
+        (let [[base _] (fs/split-ext filename)
               out-path (str export-path "/" base ".html")
-              exported (md-file->html db file)]
+              exported (md-file->html db filename)]
           (fs/create-dirs (fs/parent out-path))
           (spit out-path (page db exported))))
       (pmap (vals lit))

@@ -28,6 +28,6 @@
              "foo.clj"
              ["" "(defn foo []" "  'bar)" ""]
              (e/parse-string "\n(defn foo []\n  'bar)\n"))
-           {:def/file "foo.clj"
+           {:def/filename "foo.clj"
             :def/start 2
             :def/lines ["(defn foo []" "  'bar)"]})))

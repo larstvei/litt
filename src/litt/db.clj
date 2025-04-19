@@ -31,11 +31,11 @@
        (filter fs/regular-file?)
        (map str)))
 
-(defn add-file [files file]
-  (->> {:file/file file
-        :file/content (slurp file)
+(defn add-file [files filename]
+  (->> {:file/filename filename
+        :file/content (slurp filename)
         :file/read-at (java.time.Instant/now)}
-       (assoc files file)))
+       (assoc files filename)))
 
 (defn get-definition [db def-name-str]
   (->> [:lit/definitions (src/str->definition-name def-name-str)]
