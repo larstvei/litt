@@ -1,4 +1,4 @@
-# Litt -- Et litterært programmeringssystem
+# Den lille boken om Litt
 
 *Litt* er et system for «litterær programmering» (eng: *Literate
 programming*). Et litterært program [@knuth1984] er like fullt et

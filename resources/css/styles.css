@@ -37,6 +37,9 @@ code {
 
 h1 {
     text-align: left;
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-underline-offset: 0.125em;
 }
 
 b, strong, h1, h2, h3, h4, h5 {
