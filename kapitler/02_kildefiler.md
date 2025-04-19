@@ -198,7 +198,7 @@ definisjonsteksten. Denne funksjonen gjør en del antagelser om input.
 Den forventer å få filen som definisjonen forekommer i, linjene i filen
 (som en vektor av strenger) og en *form*. I tillegg forventer den at
 formen er produsert av biblioteket
-[edamame](https://github.com/borkdude/edamame), som lagrer lokasjonsdata
+[Edamame](https://github.com/borkdude/edamame), som lagrer lokasjonsdata
 om formen som [*metadata*](https://clojure.org/reference/metadata). Kort
 forklart er metadata informasjon som kan legges til en vilkårlig verdi,
 uten at det påvirker likhet eller hashkoder; altså er to like verdier
@@ -216,4 +216,41 @@ linjene som utgjør definisjonen. Under er et eksempel på et kall på
 
 ## Samle definisjoner
 
+Med funksjonene over, er vi klare til å kunne ta en Clojure-fil og samle
+opp alle definisjonene i filen. Vi representerer filer med et map med
+nøklene `:file/filename` som gir filnavnet og `:file/content` som gir
+innholdet som en streng. Resultatet av å samle definisjonene er et map
+der nøklene er definisjonsnavn, og verdien er informasjon om
+definisjonen.
+
 `litt.src/definitions`{=litt}
+
+Funksjonen parser filens innhold med Edamame, som resulterer i en vektor
+av former.^[Edamame kan både brukes til å parse
+[edn](https://github.com/edn-format/edn), som er et subset av Clojure
+sin syntaks, og Clojure-kode. Ved å gi argumentet `{:all true}`
+forteller vi Edamame at vi ønsker å parse alle syntaktiske strukturer i
+Clojure.] Vi fisker ut navnet på navnerommet, som antatt å være det
+andre elementet i den første formen. Siden innholdet er gitt som en
+streng (og ikke en sekvens av linjer)^[Antageligvis bør vi representere
+innholdet til en fil som en vektor av strenger, slik at vi slipper denne
+konverteringen frem og tilbake!] splitter vi den opp i en vektor med en
+streng per linje.
+
+Til slutt bygger vi et map fra formene med en `reduce`. Nøkkelen
+produseres med funksjonen `extract-definition-name` som er beskrevet
+over. Husk at denne funksjon kan returnere `nil` dersom det ikke er noe
+definisjonsnavn å trekke ut! I så fall legger vi heller ikke til denne
+formen i resultatet. Dersom definisjonsnavnet blir hentet ut uten
+problemer, assosierer vi definisjonsnavnet med informasjonen om
+definisjonen med `definition-info`, som beskrevet ovenfor.
+
+Til slutt skriver vi noen tester for denne funksjonen. Vi representerer
+hver fil med et filnavn og en streng som innhold. Den første er tom, og
+bør gi et tomt map i retur. Den neste inneholder kun en
+navneromdeklarasjon, som bør gi et map med definisjonsnavnet til
+navnerommet og informasjonen om det. Til slutt har vi en fil med en
+navneromsdeklarasjon og to funksjonsdefinisjoner, som bør gi et map som
+assosierer tre definisjonsnavn med informasjonen om dem.
+
+`litt.src-test/definitions`{=litt}

@@ -31,3 +31,33 @@
            {:def/filename "foo.clj"
             :def/start 2
             :def/lines ["(defn foo []" "  'bar)"]})))
+
+(t/deftest definitions
+  (t/are [file expected] (= (src/definitions file) expected)
+    {:file/filename "empty.clj"
+     :file/content ""}
+    '{}
+
+    {:file/filename "a.clj"
+     :file/content "(ns a)"}
+    '{{:ns a}
+      {:def/filename "a.clj"
+       :def/start 1
+       :def/lines ["(ns a)"]}}
+
+    {:file/filename "b.clj"
+     :file/content "(ns b)\n(defn f [] 1)\n(defn g [] 2)"}
+    '{{:ns b}
+      {:def/filename "b.clj"
+       :def/start 1
+       :def/lines ["(ns b)"]}
+
+      {:ns b :name f}
+      {:def/filename "b.clj"
+       :def/start 2
+       :def/lines ["(defn f [] 1)"]}
+
+      {:ns b :name g}
+      {:def/filename "b.clj"
+       :def/start 3
+       :def/lines ["(defn g [] 2)"]}}))
