@@ -1,6 +1,7 @@
 (ns litt.src-test
   (:require
    [clojure.test :as t]
+   [edamame.core :as e]
    [litt.src :as src]))
 
 (t/deftest str->definition-name
@@ -21,3 +22,12 @@
     '(defn foo [] 1) '{:ns ns :name foo}
     '(defmethod foo :val [] 1) '{:ns ns :name foo :dispatch :val}
     '(comment (+ 1 2) ...) nil))
+
+(t/deftest definition-info
+  (t/is (= (src/definition-info
+             "foo.clj"
+             ["" "(defn foo []" "  'bar)" ""]
+             (e/parse-string "\n(defn foo []\n  'bar)\n"))
+           {:def/file "foo.clj"
+            :def/start 2
+            :def/lines ["(defn foo []" "  'bar)"]})))

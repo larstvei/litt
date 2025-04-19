@@ -200,15 +200,20 @@ Den forventer å få filen som definisjonen forekommer i, linjene i filen
 formen er produsert av biblioteket
 [edamame](https://github.com/borkdude/edamame), som lagrer lokasjonsdata
 om formen som [*metadata*](https://clojure.org/reference/metadata). Kort
-forklart er metadata informasjon som kan legges til en vilkårlig verdi i
-Clojure, uten at det påvirker likhet eller hashkoder; altså er to
-like verdier med *ulik* metadata, fremdeles like.
+forklart er metadata informasjon som kan legges til en vilkårlig verdi,
+uten at det påvirker likhet eller hashkoder; altså er to like verdier
+med *ulik* metadata, fremdeles like.
 
 `litt.src/definition-info`{=litt}
 
 Her henter vi ut linjene hvor definisjonen starter og slutter fra
 metadaten til formen. Vi returnerer et map som inneholder filen
 definisjonen kommer fra, linjenummeret definisjonen starter på og
-linjene som utgjør definisjonen.
+linjene som utgjør definisjonen. Under er et eksempel på et kall på
+`definition-info` utformet som en enkel test.
+
+`litt.src-test/definition-info`{=litt}
+
+## Samle definisjoner
 
 `litt.src/definitions`{=litt}
