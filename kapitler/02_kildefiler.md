@@ -133,7 +133,7 @@ en vektor med de tre symbolene `[ns m d]`. Til slutt assosieres nøklene
 `[:ns :name :dispatch]` med de resulterende symbolene (i den gitte
 rekkefølgen).
 
-`litt.src/str->definition`{=litt}
+`litt.src/str->definition-name`{=litt}
 
 Merk at `zipmap` tar en sekvens med nøkler og en sekvens med verdier som
 argument, og assosierer første nøkkel med første verdi, andre nøkkel med
@@ -141,13 +141,13 @@ andre verdi, og så videre, og terminerer så fort den går tom for nøkler
 eller verdier. Det er grunnen til at denne funksjonen håndterer alle
 typer definisjoner. La oss spikre det i en liten test.
 
-`litt.src-test/str->definition`{=litt}
+`litt.src-test/str->definition-name`{=litt}
 
 Gitt et map som representerer en definisjon, med nøkler `:ns`, `:name`
 og `:dispatch` som beskrevet tidligere, vil denne funksjonen returnere
 strengrepresentasjonen for definisjonen:
 
-`litt.src/definition->str`{=litt}
+`litt.src/definition-name->str`{=litt}
 
 Funksjonen benytter seg av flere små *Clojureismer*. Argumentet til
 funksjonen er et map og det
@@ -161,7 +161,7 @@ hverken `"/"` eller `name` dukke opp i den resulterende strengen. Derfor
 støtter også denne funksjonen alle de tre typene definisjoner, som
 illustrert i testen under.
 
-`litt.src-test/definition->str`{=litt}
+`litt.src-test/definition-name->str`{=litt}
 
 ## Former til definisjoner
 
@@ -180,7 +180,7 @@ konstruksjon som brukes på toppnivå, men ikke er en definisjon, er en
 `(comment ...)`-blokk, som ofte er nyttig i en interaktiv
 programmeringsflyt.]
 
-`litt.src/form->definition`{=litt}
+`litt.src/extract-definition-name`{=litt}
 
 Igjen bruker vi destrukturering for å få ut de tre første elementene av
 formen som er gitt som input. Funksjonen tar utgangspunkt i `{:ns
@@ -188,8 +188,7 @@ ns-name}`, og tilføyer nøkkelen `:name` dersom definisjonen er noe annet
 enn en navneromsdeklarasjon, og tilføyer nøkkelen `:dispatch` dersom
 formen er en metode. Under er noen enkle tester for funksjonen.
 
-`litt.src-test/form->definition`{=litt}
-
+`litt.src-test/extract-definition-name`{=litt}
 
 
 `litt.src/definition-info`{=litt}

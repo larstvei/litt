@@ -3,14 +3,14 @@
    [clojure.string :as s]
    [edamame.core :as e]))
 
-(defn str->definition [s]
+(defn str->definition-name [s]
   (->> (map symbol (s/split s #"/|@"))
        (zipmap [:ns :name :dispatch])))
 
-(defn definition->str [{:keys [ns name dispatch]}]
+(defn definition-name->str [{:keys [ns name dispatch]}]
   (str ns (when name "/") name (when dispatch "@") dispatch))
 
-(defn form->definition [ns-name [def name dispatch]]
+(defn extract-definition-name [ns-name [def name dispatch]]
   (when (symbol? name)
     (cond-> {:ns ns-name}
       (not= def 'ns) (assoc :name name)
@@ -27,7 +27,7 @@
         ns-name (second (first forms))
         lines (vec (s/split-lines content))]
     (-> (fn [defs form]
-          (if-let [key (form->definition ns-name form)]
+          (if-let [key (extract-definition-name ns-name form)]
             (assoc defs key (definition-info file lines form))
             defs))
         (reduce {} forms))))

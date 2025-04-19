@@ -26,7 +26,7 @@
   ([{:lit/keys [definitions]}]
    (->> definitions
         (keys)
-        (map src/definition->str)
+        (map src/definition-name->str)
         (run! println))))
 
 (defn definition-info

@@ -8,4 +8,4 @@
        (keep-indexed
         (fn [i line]
           (when-let [[_ match] (re-matches #"`(.*)`\{=litt\}" line)]
-            {(src/str->definition match) [{:file file :line (inc i)}]})))))
+            {(src/str->definition-name match) [{:file file :line (inc i)}]})))))

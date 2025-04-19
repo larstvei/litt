@@ -49,7 +49,7 @@
 (defmethod prepare-response :textDocument/completion [_]
   [{:isIncomplete true
     :items (for [[def info] (:lit/definitions @db/db)
-                 :let [label (src/definition->str def)]]
+                 :let [label (src/definition-name->str def)]]
              {:label label :insertText (str label "`{=litt}")})}])
 
 (defmethod prepare-response :textDocument/didChange [message]

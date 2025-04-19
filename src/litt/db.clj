@@ -38,7 +38,7 @@
        (assoc files file)))
 
 (defn get-definition [db def-name-str]
-  (->> [:lit/definitions (src/str->definition def-name-str)]
+  (->> [:lit/definitions (src/str->definition-name def-name-str)]
        (get-in db)))
 
 (defn definition-source [db def-name-str]
