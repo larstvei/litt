@@ -1,4 +1,23 @@
-# Kildefiler
+# Behandling av kildefiler
+
+Litt behandler to sett med filer:
+
+- Litterære filer -- teksten som utgjør det litterære innholdet.
+- Kildefiler -- kildekoden som utgjør det kjørbare programmet.
+
+Dette kapitelet omhandler behandling av innholdet til kildefiler.
+
+## Kildefiler
+
+Litt begrenser seg til å behandle kildekode skrevet i Clojure.^[Merk at
+dette forhåpentligvis ikke vil være sant i all fremtid.] I de litterære
+filene skal vi kunne skrive om kildekoden som ligger plassert i
+kildefiler. I Litt gjøres dette gjennom å referere til biter med kode
+ved *navn*. Det gjør at Litt må kunne lese Clojure-filer, og trekke ut
+alle syntaktiske strukturer som utgjør en definisjon, og lagre disse på
+slik at de lar seg enkelt hente ut igjen.
+
+## Navnerom
 
 I Clojure defineres alle variabler, funksjoner, makroer, og så videre, i
 et [*navnerom*](https://clojure.org/reference/namespaces). Konvensjonelt
@@ -9,10 +28,10 @@ starter hver Clojure-fil med en navneromsdeklarasjon.
 `litt.src-test`{=litt}
 :::
 
-Her har vi to navneromsdeklarasjoner, en for implementasjonen og en for
-de tilhørende testene. Gjennom teksten kan du regne med at
-implementasjonen tilhører navnerommet `litt.src` og testene tilhører
-navnerommet `litt.src-test`.
+Her har vi to navneromsdeklarasjoner, en for implementasjonen for
+behandling av kildefiler og en for de tilhørende testene. Gjennom
+teksten kan du regne med at implementasjonen tilhører navnerommet
+`litt.src` og testene tilhører navnerommet `litt.src-test`.
 
 En navneromsdeklarasjon består av navnet til navnerommet, sammen med
 avhengighetene til navnerommet. Den vanligste formen for avhengigheter i
