@@ -1,13 +1,9 @@
 :root {
     color-scheme: light dark;
 
-    --light-bg: #fafafa;
-    --dark-bg: #2E3440;
-    --light-color: #37474F;
-    --dark-color: #ECEFF4;
-
-    --light-tint: rgba(0, 0, 0, 0.05);
-    --dark-tint: rgba(255, 255, 255, 0.05);
+    --bg: light-dark(#fafafa, #2E3440);
+    --fg: light-dark(#37474F, #ECEFF4);
+    --tint: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 }
 
 body {
@@ -23,12 +19,12 @@ body {
     hyphens: auto;
     line-height: 1.6;
 
-    background-color: light-dark(var(--light-bg), var(--dark-bg));
-    color: light-dark(var(--light-color), var(--dark-color));
+    background-color: var(--bg);
+    color: var(--fg);
 }
 
 pre {
-    background-color: light-dark(var(--light-tint), var(--dark-tint));
+    background-color: var(--tint);
     padding: 1rem;
     border-radius: 1rem;
     overflow: scroll;
