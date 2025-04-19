@@ -4,9 +4,8 @@
    [babashka.process :as process]
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
-   [litt.src :as src]
-   [pandocir.core :as pandocir]
-   [litt.db :as db]))
+   [litt.db :as db]
+   [pandocir.core :as pandocir]))
 
 (defn call-pandoc [content]
   (let [{:keys [out err]}
@@ -61,7 +60,7 @@
   (doseq [{:file/keys [filename content]} (into (vals css) (vals assets))]
     (fs/create-dirs (fs/parent (fs/path export-path filename)))
     (spit (str (fs/path export-path filename)) content))
-  (-> (fn [{:file/keys [filename content]}]
+  (-> (fn [{:file/keys [filename]}]
         (let [[base _] (fs/split-ext filename)
               out-path (str export-path "/" base ".html")
               exported (md-file->html db filename)]

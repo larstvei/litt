@@ -3,9 +3,9 @@
    [babashka.fs :as fs]
    [cheshire.core :as json]
    [clojure.java.io :as io]
+   [clojure.string :as s]
    [litt.db :as db]
-   [litt.src :as src]
-   [clojure.string :as s]))
+   [litt.src :as src]))
 
 (defn read-message [rdr]
   (let [header (take-while (complement empty?) (line-seq rdr))
@@ -48,7 +48,7 @@
 
 (defmethod prepare-response :textDocument/completion [_]
   [{:isIncomplete true
-    :items (for [[def info] (:lit/definitions @db/db)
+    :items (for [[def _info] (:lit/definitions @db/db)
                  :let [label (src/definition-name->str def)]]
              {:label label :insertText (str label "`{=litt}")})}])
 

@@ -2,10 +2,10 @@
   (:require
    [clojure.pprint :as pp]
    [litt.db :as db]
-   [litt.src :as src]
-   [litt.typesetting :as typesetting]
    [litt.lsp :as lsp]
-   [litt.serve :as serve]))
+   [litt.serve :as serve]
+   [litt.src :as src]
+   [litt.typesetting :as typesetting]))
 
 (defn report-coverage
   ([] (report-coverage (db/initialize-db!)))

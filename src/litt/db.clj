@@ -15,16 +15,16 @@
    :config/css-paths ["resources/css/**.css"]})
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
-  (-> (fn [db path file]
+  (-> (fn [db file]
         (update db :lit/definitions merge (src/definitions file)))
-      (reduce-kv db src)))
+      (reduce db (vals src))))
 
 (defn sync-references [{:sources/keys [lit] :as db}]
-  (-> (fn [db path file]
+  (-> (fn [db file]
         (update db :lit/references
                 (partial apply merge-with into)
                 (refs/references file)))
-      (reduce-kv db lit)))
+      (reduce db (vals lit))))
 
 (defn expand [paths]
   (->> (mapcat (partial fs/glob ".") paths)
@@ -49,7 +49,7 @@
   (swap! db (fn [db] (sync-references (update-in db (conj path :file/content) op)))))
 
 (defn initialize-db! []
-  (let [{:config/keys [title lit-paths src-paths css-paths asset-paths]} config
+  (let [{:config/keys [lit-paths src-paths css-paths asset-paths]} config
         initial-state
         (-> config
             (assoc :sources/lit (reduce add-file {} (expand lit-paths)))

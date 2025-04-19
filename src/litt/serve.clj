@@ -2,10 +2,10 @@
   (:require
    [babashka.fs :as fs]
    [clojure.string :as s]
+   [hiccup2.core :as hiccup]
    [litt.db :as db]
    [litt.typesetting :as typesetting]
-   [org.httpkit.server :as server]
-   [hiccup2.core :as hiccup]))
+   [org.httpkit.server :as server]))
 
 (defonce server (atom nil))
 (defonce clients (atom #{}))
@@ -26,7 +26,7 @@
 (defn basename [path]
   (first (fs/split-ext path)))
 
-(defn resolve-lit [{:sources/keys [lit] :as db} uri]
+(defn resolve-lit [{:sources/keys [lit]} uri]
   ((zipmap (map basename (keys lit)) (keys lit))
    (s/replace-first uri "/" "")))
 
