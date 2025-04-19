@@ -104,7 +104,7 @@ mønster som andre definisjoner, men inneholder i tillegg en
 *dispatch*-verdi. Metoden med navn `m` i et navnerom `ns` med
 dispatch-verdi `d` er representert ved `{:ns ns :name m :dispatch d}`.
 
-## Til og fra strenger
+### Til og fra strenger
 
 For å kunne referere til definisjoner fra de litterærere filene, så
 trenger vi en strengrepresentasjon for definisjonsnavnene. Der det er
@@ -163,7 +163,7 @@ illustrert i testen under.
 
 `litt.src-test/definition-name->str`{=litt}
 
-## Former til definisjoner
+### Former til definisjoner
 
 Hver kodeblokk du har sett i dette kapittelet utgjør én *form* i
 Clojure. Felles for alle Lisp-er (språkfamilien Clojure er en del av) er
@@ -190,6 +190,7 @@ formen er en metode. Under er noen enkle tester for funksjonen.
 
 `litt.src-test/extract-definition-name`{=litt}
 
+## Hente ut informasjon om en definisjon
 
 `litt.src/definition-info`{=litt}
 `litt.src/definitions`{=litt}
