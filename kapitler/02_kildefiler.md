@@ -17,35 +17,7 @@ ved *navn*. Det gjør at Litt må kunne lese Clojure-filer, og trekke ut
 alle syntaktiske strukturer som utgjør en definisjon, og lagre disse på
 slik at de lar seg enkelt hente ut igjen.
 
-## Navnerom
-
-I Clojure defineres alle variabler, funksjoner, makroer, og så videre, i
-et [*navnerom*](https://clojure.org/reference/namespaces). Konvensjonelt
-starter hver Clojure-fil med en navneromsdeklarasjon.
-
-::: {.columns}
-`litt.src`{=litt}
-`litt.src-test`{=litt}
-:::
-
-Her har vi to navneromsdeklarasjoner, en for implementasjonen for
-behandling av kildefiler og en for de tilhørende testene. Gjennom
-teksten kan du regne med at implementasjonen tilhører navnerommet
-`litt.src` og testene tilhører navnerommet `litt.src-test`.
-
-En navneromsdeklarasjon består av navnet til navnerommet, sammen med
-avhengighetene til navnerommet. Den vanligste formen for avhengigheter i
-Clojure er *andre navnerom* og de angis i `(:require ...)`. I
-navnerommet for definisjoner angir vi kortformer `s` og `e` for
-navnerommene `clojure.string` og `edamame.core`, henholdsvis. Et fullt
-kvalifisert navn i Clojure består både av et navnerom og navnet som er
-oppgitt i definisjonen. For eksempel, er `clojure.string/reverse` det
-fulle navnet til funksjonen som reverserer en streng; når vi har angitt
-en kortform for et navnerom behandles det synonymt med det fulle navnet
-på navnerommet; altså refererer `clojure.string/reverse` og `s/reverse`
-til det samme.
-
-## Navngitte kodeblokker
+### Navngitte kodeblokker
 
 I Litt er det kun mulig å referere til navngitte kodeblokker eller hele
 filer. I Clojure, vil si navngitte kodeblokker si en kodeblokk som
@@ -83,6 +55,34 @@ kombinasjon av første og andre element, og `extend-type` som brukes for
 å implementere en [protokoll](https://clojure.org/reference/protocols).
 Litt implementerer en løsning for `defmethod`, men har for øyeblikket
 ingen løsning for `extend-type`.
+
+## Navnerom
+
+I Clojure defineres alle variabler, funksjoner, makroer, og så videre, i
+et [*navnerom*](https://clojure.org/reference/namespaces). Konvensjonelt
+starter hver Clojure-fil med en navneromsdeklarasjon.
+
+::: {.columns}
+`litt.src`{=litt}
+`litt.src-test`{=litt}
+:::
+
+Her har vi to navneromsdeklarasjoner, en for implementasjonen for
+behandling av kildefiler og en for de tilhørende testene. Gjennom
+teksten kan du regne med at implementasjonen tilhører navnerommet
+`litt.src` og testene tilhører navnerommet `litt.src-test`.
+
+En navneromsdeklarasjon består av navnet til navnerommet, sammen med
+avhengighetene til navnerommet. Den vanligste formen for avhengigheter i
+Clojure er *andre navnerom* og de angis i `(:require ...)`. I
+navnerommet for definisjoner angir vi kortformer `s` og `e` for
+navnerommene `clojure.string` og `edamame.core`, henholdsvis. Et fullt
+kvalifisert navn i Clojure består både av et navnerom og navnet som er
+oppgitt i definisjonen. For eksempel, er `clojure.string/reverse` det
+fulle navnet til funksjonen som reverserer en streng; når vi har angitt
+en kortform for et navnerom behandles det synonymt med det fulle navnet
+på navnerommet; altså refererer `clojure.string/reverse` og `s/reverse`
+til det samme.
 
 ## Definisjonsnavn
 
