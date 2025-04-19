@@ -192,6 +192,23 @@ formen er en metode. Under er noen enkle tester for funksjonen.
 
 ## Hente ut informasjon om en definisjon
 
-`litt.src/definition-info`{=litt}
-`litt.src/definitions`{=litt}
+Så langt har vi hentet ut navnet til definisjonen, men vi ønsker også å
+holde oversikt over hvilken fil definisjonen kommer fra, og den faktiske
+definisjonsteksten. Denne funksjonen gjør en del antagelser om input.
+Den forventer å få filen som definisjonen forekommer i, linjene i filen
+(som en vektor av strenger) og en *form*. I tillegg forventer den at
+formen er produsert av biblioteket
+[edamame](https://github.com/borkdude/edamame), som lagrer lokasjonsdata
+om formen som [*metadata*](https://clojure.org/reference/metadata). Kort
+forklart er metadata informasjon som kan legges til en vilkårlig verdi i
+Clojure, uten at det påvirker likhet eller hashkoder; altså er to
+like verdier med *ulik* metadata, fremdeles like.
 
+`litt.src/definition-info`{=litt}
+
+Her henter vi ut linjene hvor definisjonen starter og slutter fra
+metadaten til formen. Vi returnerer et map som inneholder filen
+definisjonen kommer fra, linjenummeret definisjonen starter på og
+linjene som utgjør definisjonen.
+
+`litt.src/definitions`{=litt}
