@@ -16,14 +16,25 @@
       (not= def 'ns) (assoc :name name)
       (= def 'defmethod) (assoc :dispatch dispatch))))
 
+(defn add-location [{:keys [obj loc]}]
+  (-> (if (instance? clojure.lang.IMeta obj)
+        obj
+        {:form/wrapped obj})
+      (vary-meta merge loc)))
+
+(defn parse-definitions [content]
+  (let [parse-opts {:all true :postprocess add-location}]
+    (e/parse-string-all content parse-opts)))
+
 (defn definition-info [filename lines form]
   (let [{:keys [row end-row]} (meta form)]
     {:def/filename filename
      :def/start row
+     :def/form form
      :def/lines (subvec lines (dec row) end-row)}))
 
 (defn definitions [{:file/keys [filename content]}]
-  (let [forms (e/parse-string-all content {:all true})
+  (let [forms (parse-definitions content)
         ns-name (second (first forms))
         lines (vec (s/split-lines content))]
     (-> (fn [defs form]

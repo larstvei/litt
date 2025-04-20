@@ -27,9 +27,10 @@
   (t/is (= (src/definition-info
              "foo.clj"
              ["" "(defn foo []" "  'bar)" ""]
-             (e/parse-string "\n(defn foo []\n  'bar)\n"))
+             (e/parse-string "\n(defn foo []\n  'bar)\n" {:all true}))
            {:def/filename "foo.clj"
             :def/start 2
+            :def/form '(defn foo [] 'bar)
             :def/lines ["(defn foo []" "  'bar)"]})))
 
 (t/deftest definitions
@@ -43,6 +44,7 @@
     '{{:ns a}
       {:def/filename "a.clj"
        :def/start 1
+       :def/form (ns a)
        :def/lines ["(ns a)"]}}
 
     {:file/filename "b.clj"
@@ -50,14 +52,17 @@
     '{{:ns b}
       {:def/filename "b.clj"
        :def/start 1
+       :def/form (ns b)
        :def/lines ["(ns b)"]}
 
       {:ns b :name f}
       {:def/filename "b.clj"
        :def/start 2
+       :def/form (defn f [] {:form/wrapped 1})
        :def/lines ["(defn f [] 1)"]}
 
       {:ns b :name g}
       {:def/filename "b.clj"
        :def/start 3
+       :def/form (defn g [] {:form/wrapped 2})
        :def/lines ["(defn g [] 2)"]}}))

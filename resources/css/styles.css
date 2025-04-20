@@ -1,10 +1,11 @@
 :root {
     color-scheme: light dark;
 
-    --bg: light-dark(#fafafa, #2E3440);
+    --bg: light-dark(#FAFAFA, #2E3440);
     --fg: light-dark(#37474F, #ECEFF4);
     --primary: light-dark(#673AB7, #81A1C1);
-    --tint: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
+    --secondary: light-dark(#90A4AE, #677691);
+    --tint: light-dark(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.05));
 }
 
 body {
@@ -26,6 +27,7 @@ body {
 
 pre {
     background-color: var(--tint);
+    border: solid thin var(--secondary);
     padding: 1rem;
     border-radius: 1rem;
     overflow: scroll;
@@ -61,6 +63,7 @@ a:focus-visible {
 
 .columns {
     display: flex;
+    align-items: flex-start;
     justify-content: space-between;
 }
 
@@ -71,4 +74,12 @@ a:focus-visible {
 .references {
     text-align: left;
     word-wrap: break-word;
+}
+
+.special-form, .macro, .keyword {
+    color: var(--primary);
+}
+
+.string {
+    color: var(--secondary);
 }

@@ -5,6 +5,7 @@
    [cheshire.core :as json]
    [hiccup2.core :as hiccup]
    [litt.db :as db]
+   [litt.highlight :as highlight]
    [pandocir.core :as pandocir]))
 
 (defn call-pandoc [content]
@@ -22,8 +23,10 @@
     (json/parse-string out keyword)))
 
 (defn include-code-block [db name]
-  {:pandocir/type :pandocir.type/code-block
-   :pandocir/text (db/definition-source db name)})
+  [:pre
+   [:code
+    (hiccup/raw
+     (highlight/highlight (db/get-definition db name)))]])
 
 (defn filters [db]
   {:pandocir.type/raw-inline
