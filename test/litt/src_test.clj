@@ -17,21 +17,21 @@
     '{:ns ns :name m :dispatch d} "ns/m@d"))
 
 (t/deftest extract-definition-name
-  (t/are [d expected] (= (src/extract-definition-name 'ns d) expected)
-    '(ns ns) '{:ns ns}
-    '(defn foo [] 1) '{:ns ns :name foo}
-    '(defmethod foo :val [] 1) '{:ns ns :name foo :dispatch :val}
-    '(comment (+ 1 2) ...) nil))
+  (t/are [d expected] (= (src/extract-definition-name d) expected)
+    '(ns ns) '{}
+    '(defn foo [] 1) '{:name foo}
+    '(defmethod foo :val [] 1) '{:name foo :dispatch :val}))
 
 (t/deftest definition-info
-  (t/is (= (src/definition-info
-             "foo.clj"
-             ["" "(defn foo []" "  'bar)" ""]
-             (e/parse-string "\n(defn foo []\n  'bar)\n" {:all true}))
-           {:def/filename "foo.clj"
-            :def/start 2
-            :def/form '(defn foo [] 'bar)
-            :def/lines ["(defn foo []" "  'bar)"]})))
+  (let [info (src/definition-info
+               "foo.clj"
+               'foo
+               ["" "(defn foo []" "  'bar)" ""]
+               (src/parse-definition "\n(defn foo []\n  'bar)\n"))]
+    (t/is (= (:def/filename info) "foo.clj"))
+    (t/is (= (:def/start info) 2))
+    (t/is (= (:def/form info) '(defn foo [] 'bar)))
+    (t/is (= (:def/lines info) ["(defn foo []" "  'bar)"]))))
 
 (t/deftest definitions
   (t/are [file expected] (= (src/definitions file) expected)

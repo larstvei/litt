@@ -16,7 +16,9 @@
 
 (defn sync-definitions [{:sources/keys [src] :as db}]
   (-> (fn [db file]
-        (update db :lit/definitions merge (src/definitions file)))
+        (-> (fn [db {:def/keys [name] :as def}]
+              (assoc-in db [:lit/definitions name] def))
+            (reduce db (src/definitions file))))
       (reduce db (vals src))))
 
 (defn sync-references [{:sources/keys [lit] :as db}]

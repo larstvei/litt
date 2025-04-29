@@ -2,36 +2,20 @@
   (:require [clojure.string :as s]
             [clojure.walk :as walk]))
 
-(defn macro? [form]
-  (and (symbol? form) (:macro (meta (resolve form)))))
+(defn str-insert [s ins i]
+  (str (subs s 0 i) ins (subs s i)))
 
-(defn maybe-highlight-type [form]
-  (cond (special-symbol? form) :special-form
-        (macro? form) :macro
-        (keyword? (:form/wrapped form)) :keyword
-        (string? (:form/wrapped form)) :string
-        (and (symbol? form)
-             (= 2 (:col (meta form)))) :special-form))
+(defn wrap-css-class [offset lines {:ast/keys [type location] :as ast}]
+  (let [{:loc/keys [line column line-end column-end]} location
+        span (str "<span class=\"" (name type) "\">")
+        span-end "</span>"]
+    (-> lines
+        (update (- line-end offset) str-insert span-end (dec column-end))
+        (update (- line offset) str-insert span (dec column)))))
 
-(defn wrap-css-class [lines {:highlight/keys [type line from to]}]
-  (->> (fn [s]
-         (format "%s<span class=\"%s\">%s</span>%s"
-                 (subs s 0 from)
-                 (name type)
-                 (subs s from to)
-                 (subs s to)))
-       (update lines line)))
-
-(defn highlight [{:def/keys [start form lines]}]
-  (->> (tree-seq coll? identity form)
-       (keep #(when-let [type (maybe-highlight-type %)]
-                (when-let [{:keys [row col end-row end-col]} (meta %)]
-                  (assert (= row end-row))
-                  {:highlight/type type
-                   :highlight/line (- row start)
-                   :highlight/from (dec col)
-                   :highlight/to (dec end-col)})))
-       (sort-by (juxt :highlight/line :highlight/from))
+(defn highlight [{:def/keys [ast start lines]}]
+  (->> (tree-seq coll? identity ast)
+       (filter :ast/leaf?)
        (reverse)
-       (reduce wrap-css-class lines)
+       (reduce (partial wrap-css-class start) lines)
        (s/join "\n")))
