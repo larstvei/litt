@@ -4,6 +4,42 @@
    [clojure.walk :as walk]
    [edamame.core :as e]))
 
+(def re-tokens
+  [[:token/whitespace #"[\s,]+"]
+   [:token/comment    #";[^\n]*"]
+   [:token/string     #"\"(?:\\.|[^\"])*\""]
+   [:token/number     #"-?\d+(?:\.\d+)?"]
+   [:token/keyword    #":[^\s,()\[\]{}\";]+"]
+   [:token/symbol     #"[^\s,()\[\]{}\";]+"]
+   [:token/open       #"\(|\[|\{"]
+   [:token/close      #"\)|\]|\}"]])
+
+(defn lex [s]
+  (let [kinds (mapv (fn [[kind _]] kind) re-tokens)
+        groups (map (fn [[_ re]] (str "(" re ")")) re-tokens)
+        re (re-pattern (s/join "|" groups))]
+    (-> (fn [{:keys [index lexemes]} [match & groups]]
+          (let [kind (get kinds (count (take-while nil? groups)))
+                end (+ index (count match))
+                lexeme {:lexeme/token match
+                        :lexeme/kind kind
+                        :lexeme/location {:loc/start index :loc/end end}}]
+            {:lexemes (conj lexemes lexeme) :index end}))
+        (reduce {:index 0 :lexemes []} (re-seq re s))
+        :lexemes)))
+
+(defn parse [lexemes]
+  (-> (fn [[tree & stack] [i lexeme]]
+        (cond (= (:lexeme/kind lexeme) :token/open)
+              (conj stack tree [i])
+
+              (= (:lexeme/kind lexeme) :token/close)
+              (conj (rest stack) (conj (first stack) (conj tree i)))
+
+              :else (conj stack (conj tree i))))
+      (reduce (list []) (map-indexed vector lexemes))
+      (first)))
+
 (defn macro? [form]
   (and (symbol? form)
        (:macro (meta (resolve form)))))

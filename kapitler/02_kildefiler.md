@@ -84,6 +84,109 @@ en kortform for et navnerom behandles det synonymt med det fulle navnet
 på navnerommet; altså refererer `clojure.string/reverse` og `s/reverse`
 til det samme.
 
+## Parsing
+
+Litt trenger å kunne identifisere former på toppnivå og hente ut navn
+som defineres. I tillegg ønsker vi å kunne gjøre enkel syntaksfremheving
+under typesetting. Dette fordrer at Litt kan kan identifisere
+*strukturen* i Clojurekode. Det finnes mange biblioteker som gir oss
+dette gratis, men Litt har et ønske om å være både liten og selvstendig,
+og det må gjerne koste litt. ^[En Lisp-entusiast vil være tidlig ute med
+å påpeke er at Lisp er *homoikonisk*, som vil si at koden er uttrykket
+som en datastruktur i språket selv! Dette gjør at det sjeldent er
+nødvendig å skulle parse Lisp i Lisp, siden vi kan tolke koden som en
+datastruktur direkte (I Clojure gjøres dette med funksjonen
+`read-string`). Selv om dette er en sann og fantastisk innvending,
+så fjerner også denne tolkningen all kobling til den opprinnelige
+strengrepresentasjonen.]
+
+Fordelen er at vi kan dyppe en liten tå i *parsing*, som er et
+vidunderlig tema! Når vi som trente lesere ser kode, så ser vi ikke en
+lang rekke av tegn. Vi ser symboler, tomrom, nøkkelord, kommentarer og
+vi ser verdener som åpnes og lukkes; vi ser *struktur*. Parsing er
+kunsten å lære datamaskinen å se det vi ser; eller mer konkret, ta en
+nærmest strukturløs streng og, fra den, bygge et tre som fanger
+strukturen vi mener strengen innehar.
+
+Vi deler gjerne denne prosessen opp i flere steg. Først slår vi sammen
+tegn som hører sammen i det som ofte kalles *tokens*. I prosessen kan vi
+tilføye noe informasjon, som gir oss det som ofte kalles *leksemer*. Til
+slutt kan vi produsere gruppere leksemene i en trestruktur, som gir oss
+et parsetre.
+
+### Oppdeling
+
+For å dele opp tegnene i tokens kan vi bruke en serie med regulære
+uttrykk, ett for hver type token. Under definerer vi en vektor av par,
+der hvert par består en type og det regulære uttrykket som gjenkjenner
+denne typen token.
+
+`litt.src/re-tokens`{=litt}
+
+Regulære uttrykk er notorisk vanskelig å lese, men ikke så aller verst
+å skrive. Under følger en beskrivelse av hvert regulære
+uttrykk:
+
+`:token/whitespace`{.keyword}
+: I Clojure behandles komma (`,`) som mellomrom. Det regulære uttrykket
+  fanger komma, samt ulike typer mellomrom og linjeskift med `\s`.
+
+`:token/comment`{.keyword}
+: Alt etter semikolon (`;`) på en linje behandles som en kommentar. Det
+  regulære uttrykket fanger semikolonet, etterfulgt av hva som helst
+  *bortsett fra* linjeskift med `[^\n]`.
+
+`:token/string`{.keyword}
+: En streng består av nesten hva som helst som forekommer mellom to
+  anførselstegn (`"`). En streng kan inneholde anførselstegn hvis det
+  forekommer direkte etter en omvendt skråstrek, altså `\"`. Vi fanger
+  dette med `\\.|[^\"]`, som uttrykker hva som helst som kommer etter en
+  omvendt skråstrek (dette inkluderer også et anførselstegn) eller hva
+  som helst som ikke er et anførselstegn. Om ikke det skulle være nok,
+  så er denne disjunksjonen pakket inn i et parentesuttrykk som innledes
+  av `?:`. Dette er fordi parentesuttrykk i regulære uttrykk gjør to
+  ting: det både *grupperer* og *fanger*. Betydningen av *gruppering* er
+  den samme som parenteser i alle ordinære matematiske disipliner.
+  Betydningen av *fanger* er at en kan senere hente ut delstrengen som
+  ble fanget av uttrykket innenfor parentesuttrykket. Ved å innlede et
+  parentesuttrykk med `?:` ber vi om at det som følger skal grupperes,
+  men *ikke* fanges, en såkalt ikke-fangende gruppe. Hvorfor vi ønsker
+  å unngå å fange innholdet av strengen blir klarere i neste seksjon.
+
+`:token/number`{.keyword}
+: Tall i Clojure er som i de fleste andre språk, altså litt mer
+  kompliserte enn man skulle tro. Vi gjør en forenkling her og ser vekk
+  fra tall som tall som inneholder `E`, `N` eller `M` (som alle har en
+  betydning i Clojure), samt brøktall. Det regulære uttrykket fanger et
+  valgfritt minustegn, etterfulgt av decimaler, etterfulgt av et
+  valgfritt punktum med noen ytterligere decimaler.
+
+`:token/keyword`{.keyword}
+: Et symbol som begynner med kolon (`:`) tolkes som et *nøkkelord* i
+  Clojure. Det regulære uttrykket fanger de fleste tegn som forekommer
+  etter et kolon, med unntak av blanke, ulike parenteser, anførselstegn
+  og semikolon.
+
+`:token/symbol`{.keyword}
+: Symboler følger de samme reglene som nøkkelord, men uten kolon forran.
+
+`:token/open`{.keyword}
+: Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
+  vanlige runde parenteser `()`, hakeparanteser `[]` eller
+  krøllparenteser `{}`. Det regulære uttrykket fanger *åpningen* av et
+  parentesuttrykk.
+
+`:token/close`{.keyword}
+: Det regulære uttrykket fanger *lukkingen* av et parentesuttrykk.
+
+### Leksing
+
+`litt.src/lex`{=litt}
+
+### Parsing
+
+`litt.src/parse`{=litt}
+
 ## Definisjonsnavn
 
 I Litt er et definisjonsnavn representert som et map med inntil tre
