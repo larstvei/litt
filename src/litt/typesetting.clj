@@ -47,7 +47,7 @@
                 :content "width=device-width, initial-scale=1.0"}]
         [:meta {:name "author", :content "Lars Tveito"}]
         (for [{:file/keys [content]} (vals (:sources/css db))]
-          [:style content])
+          [:style (hiccup/raw content)])
         [:title (:config/title db)]]
        [:body body]]
       hiccup/html
