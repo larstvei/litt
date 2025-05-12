@@ -4,29 +4,41 @@
    [clojure.walk :as walk]
    [edamame.core :as e]))
 
-(def re-tokens
-  [[:token/whitespace #"[\s,]+"]
-   [:token/comment    #";[^\n]*"]
-   [:token/string     #"\"(?:\\.|[^\"])*\""]
-   [:token/number     #"-?\d+(?:\.\d+)?"]
-   [:token/keyword    #":[^\s,()\[\]{}\";]+"]
-   [:token/symbol     #"[^\s,()\[\]{}\";]+"]
-   [:token/open       #"\(|\[|\{"]
-   [:token/close      #"\)|\]|\}"]])
+(def token-spec
+  [[:whitespace #"[\s,]+"]
+   [:comment    #";[^\n]*"]
+   [:string     #"\"(?:\\.|[^\"])*\""]
+   [:number     #"-?\d+(?:\.\d+)?"]
+   [:keyword    #":[^\s,()\[\]{}\";]+"]
+   [:symbol     #"[^\s,()\[\]{}\";]+"]
+   [:open       #"\(|\[|\{"]
+   [:close      #"\)|\]|\}"]])
+
+(def token-kinds
+  (mapv first token-spec))
+
+(def regex
+  (->> (map second token-spec)
+       (map #(str "(" % ")"))
+       (s/join "|")
+       (re-pattern)))
+
+(defn token-kind [[_match & groups]]
+  (->> (take-while nil? groups)
+       (count)
+       (get token-kinds)))
 
 (defn lex [s]
-  (let [kinds (mapv (fn [[kind _]] kind) re-tokens)
-        groups (map (fn [[_ re]] (str "(" re ")")) re-tokens)
-        re (re-pattern (s/join "|" groups))]
-    (-> (fn [{:keys [index lexemes]} [match & groups]]
-          (let [kind (get kinds (count (take-while nil? groups)))
-                end (+ index (count match))
-                lexeme {:lexeme/token match
-                        :lexeme/kind kind
-                        :lexeme/location {:loc/start index :loc/end end}}]
-            {:lexemes (conj lexemes lexeme) :index end}))
-        (reduce {:index 0 :lexemes []} (re-seq re s))
-        :lexemes)))
+  (let [matches (re-seq regex s)
+        tokens (map first matches)
+        kinds (map token-kind matches)
+        starts (reductions + 0 (map count tokens))
+        ends (rest starts)]
+    (-> (fn [token kind start end]
+          {:lexeme/token token
+           :lexeme/kind kind
+           :lexeme/location {:loc/start start :loc/end end}})
+        (map tokens kinds starts ends))))
 
 (defn parse [lexemes]
   (-> (fn [[tree & stack] [i lexeme]]

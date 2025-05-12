@@ -121,7 +121,7 @@ uttrykk, ett for hver type token. Under definerer vi en vektor av par,
 der hvert par består en type og det regulære uttrykket som gjenkjenner
 denne typen token.
 
-`litt.src/re-tokens`{=litt}
+`litt.src/token-spec`{=litt}
 
 Regulære uttrykk er notorisk vanskelig å lese, men ikke så aller verst
 å skrive. Under følger en beskrivelse av hvert regulære
@@ -181,7 +181,51 @@ uttrykk:
 
 ### Leksing
 
+Fra tokens kan vi utlede leksemer, i en prosess vi kaller *leksing*. Den
+går ut på å anvende de regulære uttrykkene ovenfor på en inputstreng, og
+utifra hvilket regulært uttrykk som gjenkjent, produsere et leksem.
+
+For å legge ting til rette for leksingen, trekker vi ut type tokens i en
+egen vektor:
+
+`litt.src/token-kinds`{=litt}
+
+I tillegg fanger vi de regulære uttrykkene ovenfor i en stor
+disjunksjon:
+
+`litt.src/regex`{=litt}
+
+Hvert regulære uttrykk pakkes inn i parenteser. Vi lar disse parentesene
+både gruppere og fange, som gjør det enkelt å hente ut hvilket uttrykk
+som ble gjenkjent. Clojure sine funksjoner på regulære uttrykk
+returnerer et treff, som er en vektor `[match g1 g2 ... gn]`, der
+`match` er delstrengen som ble gjenkjent, og gruppene `g1`, `g2`, ...,
+`gn` vil enten være `nil` eller delstrengen som ble fanget i gruppen.
+Gitt en slik vektor, kan vi hente ut typen som ble gjenkjent ved å telle
+antall grupper som resulterte i `nil`, og brukke dette som en indeks inn
+i `token-kinds`:
+
+`litt.src/token-kind`{=litt}
+
+Nå ligger alt til rette for å produsere leksemer. Vi bruker funksjonen
+`re-seq` for å finne alle suksessive treff av det regulære uttrykket som
+fanger alle typer tokens. Fra treffene henter vi ut hvert token (som er
+delstrengen som ble gjenkjent) og deres respektive type med
+`token-kind`. I tillegg beregner vi hvor hvert token begynner og
+slutter. Til slutt samler vi all informasjonen i et leksem per treff.
+
 `litt.src/lex`{=litt}
+
+Merk at vi i beregningen av start- og sluttposisjonene bruker funksjonen
+`reductions`, som kanskje fortjener en kort forklaring. Der funksjonen
+`reduce` anvender en funksjon på hvert element og akkumulerer
+resultatet, gir `reductions` en sekvens med hvert delresultat fra
+reduksjonen. I dette tilfellet ser vi på lengden av hvert token, og tar
+summen med initialverdi `0`. Det gir oss en sekvens som starter med `0`,
+deretter lengden på første token, deretter summen av første og andre
+token, og så videre, hvor siste siste tall i sekvensen svarer til
+lengden av inputstrengen. Hver sluttposisjon svarer til startposisjonen
+til neste token.
 
 ### Parsing
 
