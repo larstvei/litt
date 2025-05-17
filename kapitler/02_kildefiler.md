@@ -109,34 +109,34 @@ nærmest strukturløs streng og, fra den, bygge et tre som fanger
 strukturen vi mener strengen innehar.
 
 Vi deler gjerne denne prosessen opp i flere steg. Først slår vi sammen
-tegn som hører sammen i det som ofte kalles *tokens*. I prosessen kan vi
-tilføye noe informasjon, som gir oss det som ofte kalles *leksemer*. Til
-slutt kan vi produsere gruppere leksemene i en trestruktur, som gir oss
-et parsetre.
+tegn som hører sammen i det som ofte kalles *leksem*. I prosessen kan vi
+tilføye noe informasjon, som gir oss det som ofte kalles *tokens*. Til
+slutt kan vi gruppere tokenene i en trestruktur, som gir oss et
+parsetre.
 
 ### Oppdeling
 
-For å dele opp tegnene i tokens kan vi bruke en serie med regulære
-uttrykk, ett for hver type token. Under definerer vi en vektor av par,
+For å dele opp tegnene i leksem kan vi bruke en serie med regulære
+uttrykk, ett for hver type leksem. Under definerer vi en vektor av par,
 der hvert par består en type og det regulære uttrykket som gjenkjenner
-denne typen token.
+denne typen leksem.
 
-`litt.src/token-spec`{=litt}
+`litt.src/lexeme-spec`{=litt}
 
 Regulære uttrykk er notorisk vanskelig å lese, men ikke så aller verst
 å skrive. Under følger en beskrivelse av hvert regulære
 uttrykk:
 
-`:token/whitespace`{.keyword}
+`:lexeme/whitespace`{.keyword}
 : I Clojure behandles komma (`,`) som mellomrom. Det regulære uttrykket
   fanger komma, samt ulike typer mellomrom og linjeskift med `\s`.
 
-`:token/comment`{.keyword}
+`:lexeme/comment`{.keyword}
 : Alt etter semikolon (`;`) på en linje behandles som en kommentar. Det
   regulære uttrykket fanger semikolonet, etterfulgt av hva som helst
   *bortsett fra* linjeskift med `[^\n]`.
 
-`:token/string`{.keyword}
+`:lexeme/string`{.keyword}
 : En streng består av nesten hva som helst som forekommer mellom to
   anførselstegn (`"`). En streng kan inneholde anførselstegn hvis det
   forekommer direkte etter en omvendt skråstrek, altså `\"`. Vi fanger
@@ -153,42 +153,42 @@ uttrykk:
   men *ikke* fanges, en såkalt ikke-fangende gruppe. Hvorfor vi ønsker
   å unngå å fange innholdet av strengen blir klarere i neste seksjon.
 
-`:token/number`{.keyword}
+`:lexeme/number`{.keyword}
 : Tall i Clojure er som i de fleste andre språk, altså litt mer
   kompliserte enn man skulle tro. Vi gjør en forenkling her og ser vekk
-  fra tall som tall som inneholder `E`, `N` eller `M` (som alle har en
-  betydning i Clojure), samt brøktall. Det regulære uttrykket fanger et
-  valgfritt minustegn, etterfulgt av decimaler, etterfulgt av et
-  valgfritt punktum med noen ytterligere decimaler.
+  fra tall som inneholder `E`, `N` eller `M` (som alle har en betydning
+  i Clojure), samt brøktall. Det regulære uttrykket fanger et valgfritt
+  minustegn, etterfulgt av sifre, etterfulgt av et valgfritt punktum med
+  noen ytterligere sifre.
 
-`:token/keyword`{.keyword}
+`:lexeme/keyword`{.keyword}
 : Et symbol som begynner med kolon (`:`) tolkes som et *nøkkelord* i
   Clojure. Det regulære uttrykket fanger de fleste tegn som forekommer
   etter et kolon, med unntak av blanke, ulike parenteser, anførselstegn
   og semikolon.
 
-`:token/symbol`{.keyword}
+`:lexeme/symbol`{.keyword}
 : Symboler følger de samme reglene som nøkkelord, men uten kolon forran.
 
-`:token/open`{.keyword}
+`:lexeme/open`{.keyword}
 : Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
   vanlige runde parenteser `()`, hakeparanteser `[]` eller
   krøllparenteser `{}`. Det regulære uttrykket fanger *åpningen* av et
   parentesuttrykk.
 
-`:token/close`{.keyword}
+`:lexeme/close`{.keyword}
 : Det regulære uttrykket fanger *lukkingen* av et parentesuttrykk.
 
 ### Leksing
 
-Fra tokens kan vi utlede leksemer, i en prosess vi kaller *leksing*. Den
+Fra leksem kan vi utlede tokens, i en prosess vi kaller *leksing*. Den
 går ut på å anvende de regulære uttrykkene ovenfor på en inputstreng, og
-utifra hvilket regulært uttrykk som gjenkjent, produsere et leksem.
+utifra hvilket regulært uttrykk som ble gjenkjent, produsere et token.
 
-For å legge ting til rette for leksingen, trekker vi ut type tokens i en
+For å legge ting til rette for leksingen, trekker vi ut type leksem i en
 egen vektor:
 
-`litt.src/token-kinds`{=litt}
+`litt.src/lexeme-kinds`{=litt}
 
 I tillegg fanger vi de regulære uttrykkene ovenfor i en stor
 disjunksjon:
@@ -202,17 +202,17 @@ returnerer et treff, som er en vektor `[match g1 g2 ... gn]`, der
 `match` er delstrengen som ble gjenkjent, og gruppene `g1`, `g2`, ...,
 `gn` vil enten være `nil` eller delstrengen som ble fanget i gruppen.
 Gitt en slik vektor, kan vi hente ut typen som ble gjenkjent ved å telle
-antall grupper som resulterte i `nil`, og brukke dette som en indeks inn
-i `token-kinds`:
+antall grupper som resulterte i `nil`, og bruke dette som en indeks inn
+i `lexeme-kinds`:
 
-`litt.src/token-kind`{=litt}
+`litt.src/lexeme-kind`{=litt}
 
-Nå ligger alt til rette for å produsere leksemer. Vi bruker funksjonen
+Nå ligger alt til rette for å produsere tokens. Vi bruker funksjonen
 `re-seq` for å finne alle suksessive treff av det regulære uttrykket som
-fanger alle typer tokens. Fra treffene henter vi ut hvert token (som er
+fanger alle typer leksem. Fra treffene henter vi ut hvert leksem (som er
 delstrengen som ble gjenkjent) og deres respektive type med
-`token-kind`. I tillegg beregner vi hvor hvert token begynner og
-slutter. Til slutt samler vi all informasjonen i et leksem per treff.
+`lexeme-kind`. I tillegg beregner vi hvor hvert leksem begynner og
+slutter. Til slutt samler vi all informasjonen i et token per treff.
 
 `litt.src/lex`{=litt}
 
@@ -220,12 +220,12 @@ Merk at vi i beregningen av start- og sluttposisjonene bruker funksjonen
 `reductions`, som kanskje fortjener en kort forklaring. Der funksjonen
 `reduce` anvender en funksjon på hvert element og akkumulerer
 resultatet, gir `reductions` en sekvens med hvert delresultat fra
-reduksjonen. I dette tilfellet ser vi på lengden av hvert token, og tar
+reduksjonen. I dette tilfellet ser vi på lengden av hvert leksem, og tar
 summen med initialverdi `0`. Det gir oss en sekvens som starter med `0`,
-deretter lengden på første token, deretter summen av første og andre
-token, og så videre, hvor siste siste tall i sekvensen svarer til
+deretter lengden på første leksem, deretter summen av første og andre
+leksem, og så videre, hvor siste siste tall i sekvensen svarer til
 lengden av inputstrengen. Hver sluttposisjon svarer til startposisjonen
-til neste token.
+til neste leksem.
 
 ### Parsing
 
@@ -237,14 +237,12 @@ I Litt er et definisjonsnavn representert som et map med inntil tre
 nøkler, og tar høyde for tre typer definisjoner:
 
 - Definisjon av et navnerom.
-- En definisjon av en variabel, funksjon, makroer, og lignende.
+- En definisjon av en variabel, funksjon, makro og lignende.
 - En definisjon av en metode, definert med `defmethod`.
 
 Et navnerom med navn `ns` er representert ved `{:ns ns}`. En definisjon
-av en funksjon `f` i et navnerom `ns` er representert ved `{:ns ns :name
-f}`. Definisjoner for variabler, makroer og lignende har samme form;
-altså er en definisjon av en variabel `v` i et navnerom `ns`
-representert ved `{:ns ns :name v}`.
+av en funksjon, variabler, makroer eller lignende med navn `v` i et
+navnerom `ns` er representert ved `{:ns ns :name v}`.
 
 [Metoder](https://clojure.org/reference/multimethods) følger samme
 mønster som andre definisjoner, men inneholder i tillegg en
@@ -253,23 +251,24 @@ dispatch-verdi `d` er representert ved `{:ns ns :name m :dispatch d}`.
 
 ### Til og fra strenger
 
-For å kunne referere til definisjoner fra de litterærere filene, så
+For å kunne referere til definisjoner fra de litterære filene, så
 trenger vi en strengrepresentasjon for definisjonsnavnene. Der det er
 mulig bruker vi Clojure sin syntaks for fullt kvalifiserte navn.
 Navnerom består helt enkelt av navnet til navnerommet; for eksempel er
 strengrepresentasjonen av navnerommet `ns` strengen `"ns"`. For andre
 definisjoner består strengrepresentasjonen av navnerommet og
-definisjonsnavnet, separert med `/`. For eksempel er
+definisjonsnavnet, separert med `"/"`. For eksempel er
 strengrepresentasjonen av en definisjon `f` i et navnerom `ns`
 representert ved strengen `"ns/f"`.
 
 Metoder definert med `defmethod` kan ikke refereres til direkte, og har
 derfor ikke et veldefinert navn i Clojure, og vi må finne på vår egen
 representasjon. Vi følger samme struktur for navnerommet og
-metodenavnet, men legger til dispatch-verdien separert med `@`. Symbolet
-`@` er valgt bortimot vilkårlig, men har fordelen at det ikke kan brukes
-som navn i ordinære definisjoner. Dermed vil metoden med navn `m` i et
-navnerom `ns` med dispatch-verdi `d` ha strengrepresentasjon `"ns/m@d"`.
+metodenavnet, men legger til dispatch-verdien separert med `"@"`.
+Symbolet `@` er valgt bortimot vilkårlig, men har fordelen at det ikke
+kan brukes som navn i ordinære definisjoner. Dermed vil metoden med navn
+`m` i et navnerom `ns` med dispatch-verdi `d` ha strengrepresentasjon
+`"ns/m@d"`.
 
 Gitt en strengrepresentasjon for en definisjon bygger vi et map med
 nøkler `:ns`, `:name` og `:dispatch`. Vi antar at strengen inneholder

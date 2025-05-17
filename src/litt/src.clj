@@ -4,7 +4,7 @@
    [clojure.walk :as walk]
    [edamame.core :as e]))
 
-(def token-spec
+(def lexeme-spec
   [[:whitespace #"[\s,]+"]
    [:comment    #";[^\n]*"]
    [:string     #"\"(?:\\.|[^\"])*\""]
@@ -14,42 +14,42 @@
    [:open       #"\(|\[|\{"]
    [:close      #"\)|\]|\}"]])
 
-(def token-kinds
-  (mapv first token-spec))
+(def lexeme-kinds
+  (mapv first lexeme-spec))
 
 (def regex
-  (->> (map second token-spec)
+  (->> (map second lexeme-spec)
        (map #(str "(" % ")"))
        (s/join "|")
        (re-pattern)))
 
-(defn token-kind [[_match & groups]]
+(defn lexeme-kind [[_match & groups]]
   (->> (take-while nil? groups)
        (count)
-       (get token-kinds)))
+       (get lexeme-kinds)))
 
 (defn lex [s]
   (let [matches (re-seq regex s)
-        tokens (map first matches)
-        kinds (map token-kind matches)
-        starts (reductions + 0 (map count tokens))
+        lexemes (map first matches)
+        kinds (map lexeme-kind matches)
+        starts (reductions + 0 (map count lexemes))
         ends (rest starts)]
-    (-> (fn [token kind start end]
-          {:lexeme/token token
-           :lexeme/kind kind
-           :lexeme/location {:loc/start start :loc/end end}})
-        (map tokens kinds starts ends))))
+    (-> (fn [lexeme kind start end]
+          {:token/lexeme lexeme
+           :token/kind kind
+           :token/location {:loc/start start :loc/end end}})
+        (map lexemes kinds starts ends))))
 
-(defn parse [lexemes]
-  (-> (fn [[tree & stack] [i lexeme]]
-        (cond (= (:lexeme/kind lexeme) :token/open)
+(defn parse [tokens]
+  (-> (fn [[tree & stack] [i token]]
+        (cond (= (:token/kind token) :open)
               (conj stack tree [i])
 
-              (= (:lexeme/kind lexeme) :token/close)
+              (= (:token/kind token) :close)
               (conj (rest stack) (conj (first stack) (conj tree i)))
 
               :else (conj stack (conj tree i))))
-      (reduce (list []) (map-indexed vector lexemes))
+      (reduce (list []) (map-indexed vector tokens))
       (first)))
 
 (defn macro? [form]
