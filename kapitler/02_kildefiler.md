@@ -203,9 +203,30 @@ returnerer et treff, som er en vektor `[match g1 g2 ... gn]`, der
 `gn` vil enten være `nil` eller delstrengen som ble fanget i gruppen.
 Gitt en slik vektor, kan vi hente ut typen som ble gjenkjent ved å telle
 antall grupper som resulterte i `nil`, og bruke dette som en indeks inn
-i `lexeme-kinds`:
+i `lexeme-kinds`. Dersom typen er et symbol behandler vi dette spesielt
+i funksjonen `symbol-kind` som er beskrevet nedenfor.
 
 `litt.src/lexeme-kind`{=litt}
+
+I Clojure har vi mange symboler som bør utheves, for eksempel
+`def`{.special-symbol}, `if`{.macro} og `let`{.macro}. Symbolene
+`def`{.special-symbol} og `if`{.special-symbol} kalles spesielle
+symboler, fordi de er implementert som primitiver i språket.
+`let`{.macro} er ikke et primitivt, men heller en makro. Denne
+distinksjonen er ikke viktig for Litt, men vi ønsker å skille disse fra
+andre symboler (primært for syntaksfremheving). Det er en liten håndfull
+spesielle symboler, som kan identifiseres med den innebygde funksjonen
+`special-symbol?`. Makroer kan ikke identifiseres like lett, fordi nye
+makroer kan defineres dynamisk. Her nøyer vi oss med å identifisere
+*innebygde* makroer, som vi gjør ved å slå opp hva symbolet er bundet
+til og se om det bærer metadata som indikerer at det er en makro. Utover
+de innebyggede makroene ønsker vi å kunne finne de makroene som
+definerer noe; disse begynner tradisjonelt med `def`, for eksempel
+`t/deftest`{.macro}. Vi fanger opp disse med det regulære uttrykket
+`#"\bdef"`, der `\b` angir en ordgrense. Symboler som hverken er
+spesielle eller makroer lar vi være helt ordinære symboler.
+
+`litt.src/symbol-kind`{=litt}
 
 Nå ligger alt til rette for å produsere tokens. Vi bruker funksjonen
 `re-seq` for å finne alle suksessive treff av det regulære uttrykket som

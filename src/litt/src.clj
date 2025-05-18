@@ -23,10 +23,16 @@
        (s/join "|")
        (re-pattern)))
 
-(defn lexeme-kind [[_match & groups]]
-  (->> (take-while nil? groups)
-       (count)
-       (get lexeme-kinds)))
+(defn symbol-kind [match]
+  (let [sym (symbol match)]
+    (cond (special-symbol? sym) :special-symbol
+          (:macro (meta (resolve sym))) :macro
+          (re-find #"\bdef" match) :macro
+          :else :symbol)))
+
+(defn lexeme-kind [[match & groups]]
+  (let [kind (get lexeme-kinds (count (take-while nil? groups)))]
+    (if (= kind :symbol) (symbol-kind match) kind)))
 
 (defn lex [s]
   (let [matches (re-seq regex s)
@@ -61,7 +67,7 @@
         (keyword? leaf) :keyword
         (nil? leaf) :nil
         (number? leaf) :number
-        (special-symbol? leaf) :special-form
+        (special-symbol? leaf) :special-symbol
         (string? leaf) :string
         (macro? leaf) :macro
         (symbol? leaf) :symbol

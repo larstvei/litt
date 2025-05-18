@@ -78,7 +78,7 @@ a:focus-visible {
     word-wrap: break-word;
 }
 
-.special-form, .macro, .keyword {
+.special-symbol, .macro, .keyword {
     color: var(--primary);
 }
 
