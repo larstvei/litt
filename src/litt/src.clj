@@ -48,6 +48,11 @@
         ends (rest starts)]
     (map make-token lexemes kinds starts ends)))
 
+(defn skip? [t] (#{:whitespace :comment} (:token/kind t)))
+(defn open? [t] (= (:token/kind t) :open))
+(defn close? [t] (= (:token/kind t) :close))
+(defn meta? [t] (= (:token/kind t) :meta))
+
 (defn parse [tokens]
   (-> (fn [[tree & stack] [i token]]
         (case (:token/kind token)
