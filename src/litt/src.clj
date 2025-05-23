@@ -7,6 +7,7 @@
 (def lexeme-spec
   [[:whitespace #"[\s,]+"]
    [:comment    #";[^\n]*"]
+   [:meta       #"\^"]
    [:string     #"\"(?:\\.|[^\"])*\""]
    [:number     #"-?\d+(?:\.\d+)?"]
    [:keyword    #":[^\s,()\[\]{}\";]+"]

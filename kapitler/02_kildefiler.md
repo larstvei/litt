@@ -136,6 +136,13 @@ uttrykk:
   regulære uttrykket fanger semikolonet, etterfulgt av hva som helst
   *bortsett fra* linjeskift med `[^\n]`.
 
+`:lexeme/meta`{.keyword}
+: Clojure støtter å tilføye symboler og beholdere med
+  [*metadata*](https://clojure.org/reference/metadata), som er
+  informasjon som bæres med verdien, uten at det påvirker likhet eller
+  hashverdier. Ved å bruke symbolet `^`, så vil det som kommer etter
+  tolkes som metadata.
+
 `:lexeme/string`{.keyword}
 : En streng består av nesten hva som helst som forekommer mellom to
   anførselstegn (`"`). En streng kan inneholde anførselstegn hvis det
