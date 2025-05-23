@@ -53,15 +53,14 @@
 (defn close? [t] (= (:token/kind t) :close))
 (defn meta? [t] (= (:token/kind t) :meta))
 
-(defn parse [tokens]
-  (-> (fn [[tree & stack] [i token]]
-        (case (:token/kind token)
-          :open (conj stack tree [i])
-          :close (->> (conj tree i)
-                      (conj (first stack))
-                      (conj (rest stack)))
-          (conj stack (conj tree i))))
-      (reduce (list []) (map-indexed vector tokens))
+(defn tokens->cst [tokens]
+  (-> (fn [[tree & stack] token]
+        (cond (open? token) (conj stack tree [token])
+              (close? token) (->> (conj tree token)
+                                  (conj (first stack))
+                                  (conj (rest stack)))
+              :else (conj stack (conj tree token))))
+      (reduce (list []) tokens)
       (first)))
 
 (defn macro? [form]
