@@ -228,11 +228,18 @@ spesielle eller makroer lar vi være helt ordinære symboler.
 
 `litt.src/symbol-kind`{=litt}
 
-Nå ligger alt til rette for å produsere tokens. Vi bruker funksjonen
-`re-seq` for å finne alle suksessive treff av det regulære uttrykket som
-fanger alle typer leksem. Fra treffene henter vi ut hvert leksem (som er
-delstrengen som ble gjenkjent) og deres respektive type med
-`lexeme-kind`. I tillegg beregner vi hvor hvert leksem begynner og
+Et token består av et leksem (delstrengen som ble fanget av det regulære
+uttrykket), en type (som beskrevet av `lexeme-type`) og en lokasjon, som
+igjen består av start- og sluttindeks. Vi lager en liten hjelpefunksjon
+for å lage token som følger:
+
+`litt.src/make-token`{=litt}
+
+Nå ligger alt til rette for å produsere tokens fra en streng. Vi bruker
+funksjonen `re-seq` for å finne alle suksessive treff av det regulære
+uttrykket som fanger alle typer leksem. Fra treffene henter vi ut hvert
+leksem (som er delstrengen som ble gjenkjent) og deres respektive type
+med `lexeme-kind`. I tillegg beregner vi hvor hvert leksem begynner og
 slutter. Til slutt samler vi all informasjonen i et token per treff.
 
 `litt.src/lex`{=litt}

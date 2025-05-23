@@ -34,17 +34,18 @@
   (let [kind (get lexeme-kinds (count (take-while nil? groups)))]
     (if (= kind :symbol) (symbol-kind match) kind)))
 
+(defn make-token [lexeme kind start end]
+  {:token/lexeme lexeme
+   :token/kind kind
+   :token/location {:loc/start start :loc/end end}})
+
 (defn lex [s]
   (let [matches (re-seq regex s)
         lexemes (map first matches)
         kinds (map lexeme-kind matches)
         starts (reductions + 0 (map count lexemes))
         ends (rest starts)]
-    (-> (fn [lexeme kind start end]
-          {:token/lexeme lexeme
-           :token/kind kind
-           :token/location {:loc/start start :loc/end end}})
-        (map lexemes kinds starts ends))))
+    (map make-token lexemes kinds starts ends)))
 
 (defn parse [tokens]
   (-> (fn [[tree & stack] [i token]]
