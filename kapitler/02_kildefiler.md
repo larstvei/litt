@@ -127,23 +127,23 @@ Regulære uttrykk er notorisk vanskelig å lese, men ikke så aller verst
 å skrive. Under følger en beskrivelse av hvert regulære
 uttrykk:
 
-`:lexeme/whitespace`{.keyword}
+`:whitespace`{.keyword}
 : I Clojure behandles komma (`,`) som mellomrom. Det regulære uttrykket
   fanger komma, samt ulike typer mellomrom og linjeskift med `\s`.
 
-`:lexeme/comment`{.keyword}
+`:comment`{.keyword}
 : Alt etter semikolon (`;`) på en linje behandles som en kommentar. Det
   regulære uttrykket fanger semikolonet, etterfulgt av hva som helst
   *bortsett fra* linjeskift med `[^\n]`.
 
-`:lexeme/meta`{.keyword}
+`:meta`{.keyword}
 : Clojure støtter å tilføye symboler og beholdere med
   [*metadata*](https://clojure.org/reference/metadata), som er
   informasjon som bæres med verdien, uten at det påvirker likhet eller
   hashverdier. Ved å bruke symbolet `^`, så vil det som kommer etter
   tolkes som metadata.
 
-`:lexeme/string`{.keyword}
+`:string`{.keyword}
 : En streng består av nesten hva som helst som forekommer mellom to
   anførselstegn (`"`). En streng kan inneholde anførselstegn hvis det
   forekommer direkte etter en omvendt skråstrek, altså `\"`. Vi fanger
@@ -160,7 +160,7 @@ uttrykk:
   men *ikke* fanges, en såkalt ikke-fangende gruppe. Hvorfor vi ønsker
   å unngå å fange innholdet av strengen blir klarere i neste seksjon.
 
-`:lexeme/number`{.keyword}
+`:number`{.keyword}
 : Tall i Clojure er som i de fleste andre språk, altså litt mer
   kompliserte enn man skulle tro. Vi gjør en forenkling her og ser vekk
   fra tall som inneholder `E`, `N` eller `M` (som alle har en betydning
@@ -168,22 +168,22 @@ uttrykk:
   minustegn, etterfulgt av sifre, etterfulgt av et valgfritt punktum med
   noen ytterligere sifre.
 
-`:lexeme/keyword`{.keyword}
+`:keyword`{.keyword}
 : Et symbol som begynner med kolon (`:`) tolkes som et *nøkkelord* i
   Clojure. Det regulære uttrykket fanger de fleste tegn som forekommer
   etter et kolon, med unntak av blanke, ulike parenteser, anførselstegn
   og semikolon.
 
-`:lexeme/symbol`{.keyword}
+`:symbol`{.keyword}
 : Symboler følger de samme reglene som nøkkelord, men uten kolon forran.
 
-`:lexeme/open`{.keyword}
+`:open`{.keyword}
 : Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
   vanlige runde parenteser `()`, hakeparanteser `[]` eller
   krøllparenteser `{}`. Det regulære uttrykket fanger *åpningen* av et
   parentesuttrykk.
 
-`:lexeme/close`{.keyword}
+`:close`{.keyword}
 : Det regulære uttrykket fanger *lukkingen* av et parentesuttrykk.
 
 ### Leksing
