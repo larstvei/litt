@@ -3,6 +3,7 @@
    [babashka.fs :as fs]
    [babashka.process :as process]
    [cheshire.core :as json]
+   [clojure.string :as s]
    [hiccup2.core :as hiccup]
    [litt.db :as db]
    [litt.highlight :as highlight]
@@ -22,22 +23,26 @@
         (println "Pandoc error: " err)))
     (json/parse-string out keyword)))
 
-(defn include-code-block [db name]
-  [:pre
-   [:code
-    (hiccup/raw
-     (highlight/highlight (db/get-definition db name)))]])
+(defn include-code-block [code]
+  [:pre [:code (hiccup/raw code)]])
 
 (defn filters [db]
   {:pandocir.type/raw-inline
    (fn [{:pandocir/keys [format text]}]
      (case format
-       "litt"
-       (include-code-block db text)
+       "litt" (->> (db/get-definition db text)
+                   highlight/highlight
+                   include-code-block)
+       "litt-file" (assoc {:pandocir/type :pandocir.type/code-block}
+                          :pandocir/text (slurp text))))
 
-       "litt-file"
-       (assoc {:pandocir/type :pandocir.type/code-block}
-              :pandocir/text (slurp text))))})
+   :pandocir.type/raw-block
+   (fn [{:pandocir/keys [format text]}]
+     (when (= format "litt")
+       (->> (s/split-lines text)
+            (map (comp highlight/highlight (partial db/get-definition db)))
+            (s/join "\n")
+            include-code-block)))})
 
 (defn page [db body]
   (-> [:html {:lang "nb"}
