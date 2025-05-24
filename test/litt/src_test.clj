@@ -4,6 +4,40 @@
    [edamame.core :as e]
    [litt.src :as src]))
 
+(t/deftest symbol-kind
+  (t/is (= :special-symbol (src/symbol-kind "def")))
+  (t/is (= :macro (src/symbol-kind "when")))
+  (t/is (= :macro (src/symbol-kind "t/deftest")))
+  (t/is (= :symbol (src/symbol-kind "user/foo"))))
+
+(t/deftest make-token
+  (t/is (= (src/make-token "x" :symbol 7 8)
+           {:token/lexeme "x" :token/kind :symbol
+            :token/location {:loc/start 7 :loc/end 8}})))
+
+(t/deftest lex-basic
+  (t/is (= (src/lex "") '()))
+  (t/is (= (src/lex "()")
+           '({:token/lexeme "(",
+              :token/kind :open,
+              :token/location {:loc/start 0, :loc/end 1}}
+             {:token/lexeme ")",
+              :token/kind :close,
+              :token/location {:loc/start 1, :loc/end 2}}))))
+
+(t/deftest lex-example
+  (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
+        tokens (src/lex s)
+        kinds (mapv :token/kind tokens)
+        lexemes (mapv :token/lexeme tokens)]
+    (t/is (= (subvec kinds 0 4)
+             [:open :special-symbol :whitespace :meta]))
+    (t/is (= (subvec kinds (- (count kinds) 4))
+             [:close :close :whitespace :comment]))
+    (t/is (= (-> tokens first :token/location :loc/start) 0))
+    (t/is (= (-> tokens last  :token/location :loc/end) (count s)))
+    (t/is (= (apply str lexemes) s))))
+
 (t/deftest str->definition-name
   (t/are [s expected] (= (src/str->definition-name s) expected)
     "ns"     '{:ns ns}

@@ -235,12 +235,21 @@ spesielle eller makroer lar vi være helt ordinære symboler.
 
 `litt.src/symbol-kind`{=litt}
 
+Her er noen eksempler på ulike typer symboler, materialisert i en test:
+
+`litt.src-test/symbol-kind`{=litt}
+
 Et token består av et leksem (delstrengen som ble fanget av det regulære
 uttrykket), en type (som beskrevet av `lexeme-type`) og en lokasjon, som
 igjen består av start- og sluttindeks. Vi lager en liten hjelpefunksjon
 for å lage token som følger:
 
 `litt.src/make-token`{=litt}
+
+Her er en bitteliten test for å illustrere hvordan en token typisk kan
+se ut:
+
+`litt.src-test/make-token`{=litt}
 
 Nå ligger alt til rette for å produsere tokens fra en streng. Vi bruker
 funksjonen `re-seq` for å finne alle suksessive treff av det regulære
@@ -261,6 +270,24 @@ deretter lengden på første leksem, deretter summen av første og andre
 leksem, og så videre, hvor siste siste tall i sekvensen svarer til
 lengden av inputstrengen. Hver sluttposisjon svarer til startposisjonen
 til neste leksem.
+
+La oss se hvordan resultater på et kall på `lex` typisk ser ut. Vi
+sjekker at den tomme strengen gir en tom liste med tokens, og at `"()"`
+gir oss en åpneparentes og en lukkeparentes, og at tokene ser fornuftig
+ut.
+
+`litt.src-test/lex-basic`{=litt}
+
+Siden denne funksjonen syr sammen en del funksjonalitet kan det være
+nyttig å teste den litt nøyere. Vi tar utgangspunkt i en streng `s` som
+inneholder de fleste type tokens. Under sjekker vi at typene til de fire
+første og siste tokene stemmer overens med det vi forventer. I tillegg
+tar vi en stikkprøve på at det første tokenet har lokasjon som starter
+på posisjon 0, og at det siste tokenet har en lokasjon som svarer til
+lengden på strengen. Til slutt sjekker vi at dersom vi konkatenerer alle
+leksemene, så blir resultatet det samme som den opprinnelige strengen.
+
+`litt.src-test/lex-example`{=litt}
 
 ### Parsing
 
