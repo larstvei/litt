@@ -206,13 +206,13 @@ disjunksjon:
 Hvert regulære uttrykk pakkes inn i parenteser. Vi lar disse parentesene
 både gruppere og fange, som gjør det enkelt å hente ut hvilket uttrykk
 som ble gjenkjent. Clojure sine funksjoner på regulære uttrykk
-returnerer et treff, som er en vektor `[match g1 g2 ... gn]`, der
-`match` er delstrengen som ble gjenkjent, og gruppene `g1`, `g2`, ...,
-`gn` vil enten være `nil` eller delstrengen som ble fanget i gruppen.
-Gitt en slik vektor, kan vi hente ut typen som ble gjenkjent ved å telle
-antall grupper som resulterte i `nil`, og bruke dette som en indeks inn
-i `lexeme-kinds`. Dersom typen er et symbol behandler vi dette spesielt
-i funksjonen `symbol-kind` som er beskrevet nedenfor.
+returnerer et treff som er en vektor `[match g1 g2 ... gn]`, der `match`
+er delstrengen som ble gjenkjent, og gruppene `g1`, `g2`, ..., `gn` vil
+enten være `nil` eller delstrengen som ble fanget i gruppen. Gitt en
+slik vektor, kan vi hente ut typen som ble gjenkjent ved å telle antall
+grupper som resulterte i `nil`, og bruke dette som en indeks inn i
+`lexeme-kinds`. Dersom typen er et symbol behandler vi dette spesielt i
+funksjonen `symbol-kind` som er beskrevet nedenfor.
 
 `litt.src/lexeme-kind`{=litt}
 
