@@ -295,9 +295,29 @@ leksemene, så blir resultatet det samme som den opprinnelige strengen.
 
 `litt.src-test/lex-example`{=litt}
 
-### Parsing
+### Fra tokens til konkrete syntakstrær
 
-`litt.src/parse`{=litt}
+Etter leksing er den opprinnelige strengen delt opp i fornuftige
+segmenter, som trekker oss et steg nærmere en representasjon som
+samsvarer med slik vi ser strengen. Denne oppdelingen gir oss en *flat*
+liste med tokens, og forteller ingenting om hva som er inneholdt i hva.
+Som et lite eksempel består uttrykket `(def x [1 2 3])` av en liste som
+inneholder tre elementer, nemlig symbolet `def`, symbolet `x` og
+vektoren `[1 2 3]`. Disse tre elementene er inneholdt i den ytre listen,
+men elementene `1`, `2` og `3` er inneholdt i en indre vektor. Det vi
+beskriver her er en hierarkisk struktur, og slike strukturer kan
+representeres som et tre.
+
+Her er noen enkle predikater som lar oss sjekke typen til et token med
+litt mindre sermoni:
+
+```{=litt}
+litt.src/skip?
+litt.src/open?
+litt.src/close?
+litt.src/meta?
+```
+
 
 ## Definisjonsnavn
 
