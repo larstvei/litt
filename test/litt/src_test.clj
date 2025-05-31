@@ -5,9 +5,13 @@
    [litt.src :as src]))
 
 (t/deftest symbol-kind
-  (t/is (= :special-symbol (src/symbol-kind "def")))
+  (t/is (= :definition (src/symbol-kind "ns")))
+  (t/is (= :definition (src/symbol-kind "def")))
+  (t/is (= :definition (src/symbol-kind "t/deftest")))
+  (t/is (= :definition (src/symbol-kind "clojure.test/deftest")))
+  (t/is (= :special-symbol (src/symbol-kind "if")))
   (t/is (= :macro (src/symbol-kind "when")))
-  (t/is (= :macro (src/symbol-kind "t/deftest")))
+  (t/is (= :symbol (src/symbol-kind "foo")))
   (t/is (= :symbol (src/symbol-kind "user/foo"))))
 
 (t/deftest make-token
@@ -31,7 +35,7 @@
         kinds (mapv :token/kind tokens)
         lexemes (mapv :token/lexeme tokens)]
     (t/is (= (subvec kinds 0 4)
-             [:open :special-symbol :whitespace :meta]))
+             [:open :definition :whitespace :meta]))
     (t/is (= (subvec kinds (- (count kinds) 4))
              [:close :close :whitespace :comment]))
     (t/is (= (-> tokens first :token/location :loc/start) 0))

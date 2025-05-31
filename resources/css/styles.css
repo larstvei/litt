@@ -78,10 +78,10 @@ a:focus-visible {
     word-wrap: break-word;
 }
 
-.special-symbol, .macro, .keyword {
+.special-symbol, .macro, .definition, .keyword {
     color: var(--primary);
 }
 
-.string {
+.string, .comment {
     color: var(--secondary);
 }

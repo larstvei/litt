@@ -217,22 +217,27 @@ funksjonen `symbol-kind` som er beskrevet nedenfor.
 `litt.src/lexeme-kind`{=litt}
 
 I Clojure har vi mange symboler som bør utheves, for eksempel
-`def`{.special-symbol}, `if`{.macro} og `let`{.macro}. Symbolene
-`def`{.special-symbol} og `if`{.special-symbol} kalles spesielle
-symboler, fordi de er implementert som primitiver i språket.
-`let`{.macro} er ikke et primitivt, men heller en makro. Denne
+`if`{.special-symbol} og `let`{.macro}. Symbolet `if`{.special-symbol}
+kalles et spesielt symbol, fordi det er implementert som et primitiv i
+språket.`let`{.macro} er ikke et primitivt, men heller en makro. Denne
 distinksjonen er ikke viktig for Litt, men vi ønsker å skille disse fra
 andre symboler (primært for syntaksfremheving). Det er en liten håndfull
 spesielle symboler, som kan identifiseres med den innebygde funksjonen
 `special-symbol?`. Makroer kan ikke identifiseres like lett, fordi nye
 makroer kan defineres dynamisk. Her nøyer vi oss med å identifisere
 *innebygde* makroer, som vi gjør ved å slå opp hva symbolet er bundet
-til og se om det bærer metadata som indikerer at det er en makro. Utover
-de innebyggede makroene ønsker vi å kunne finne de makroene som
-definerer noe; disse begynner tradisjonelt med `def`, for eksempel
-`t/deftest`{.macro}. Vi fanger opp disse med det regulære uttrykket
-`#"\bdef"`, der `\b` angir en ordgrense. Symboler som hverken er
-spesielle eller makroer lar vi være helt ordinære symboler.
+til og se om det bærer metadata som indikerer at det er en makro. I
+tillegg ønsker vi å fange symbolene som indikerer at noe defineres.
+Disse begynner konvensjonelt med prefikset `"def"`, men det kan være
+mange andre funksjoner og symboler som begynner med `"def"` men
+allikevel ikke definerer noe. Dessverre har jeg ikke funnet noen bedre
+løsning enn å liste alle kjente symboler som definerer noe og samle
+dette i et enkelt regulært uttrykk.
+
+`litt.src/definition-regex`{=litt}
+
+Med det regulære uttrykket på plass kan vi gjøre distinksjoner på hva
+slags type symbol et treff utgjør.
 
 `litt.src/symbol-kind`{=litt}
 

@@ -24,11 +24,19 @@
        (s/join "|")
        (re-pattern)))
 
+(def definition-regex
+  (let [operators ["ns" "def" "defonce" "defn" "defn-"
+                   "defmacro" "definline" "defmulti" "defmethod"
+                   "defprotocol" "definterface" "defrecord"
+                   "deftype" "defstruct"
+                   "deftest" "deftest-"]]
+    (re-pattern (str "([\\w\\.]+/)?(" (s/join "|" operators) ")"))))
+
 (defn symbol-kind [match]
   (let [sym (symbol match)]
-    (cond (special-symbol? sym) :special-symbol
+    (cond (re-matches definition-regex match) :definition
+          (special-symbol? sym) :special-symbol
           (:macro (meta (resolve sym))) :macro
-          (re-find #"\bdef" match) :macro
           :else :symbol)))
 
 (defn lexeme-kind [[match & groups]]
