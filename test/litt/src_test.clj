@@ -1,8 +1,8 @@
 (ns litt.src-test
   (:require
    [clojure.test :as t]
-   [edamame.core :as e]
-   [litt.src :as src]))
+   [litt.src :as src]
+   [clojure.walk :as walk]))
 
 (t/deftest symbol-kind
   (t/is (= :definition (src/symbol-kind "ns")))
@@ -22,12 +22,12 @@
 (t/deftest lex-basic
   (t/is (= (src/lex "") '()))
   (t/is (= (src/lex "()")
-           '({:token/lexeme "(",
-              :token/kind :open,
-              :token/location {:loc/start 0, :loc/end 1}}
-             {:token/lexeme ")",
-              :token/kind :close,
-              :token/location {:loc/start 1, :loc/end 2}}))))
+           '({:token/lexeme "("
+              :token/kind :open
+              :token/location {:loc/start 0 :loc/end 1}}
+             {:token/lexeme ")"
+              :token/kind :close
+              :token/location {:loc/start 1 :loc/end 2}}))))
 
 (t/deftest lex-example
   (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
@@ -41,6 +41,45 @@
     (t/is (= (-> tokens first :token/location :loc/start) 0))
     (t/is (= (-> tokens last  :token/location :loc/end) (count s)))
     (t/is (= (apply str lexemes) s))))
+
+(t/deftest tokens->cst-basic
+  (t/is (= (src/tokens->cst (src/lex "")) []))
+  (t/is (= (src/tokens->cst (src/lex "{() ()}"))
+           [[{:token/lexeme "{"
+              :token/kind :open
+              :token/location {:loc/start 0 :loc/end 1}}
+             [{:token/lexeme "("
+               :token/kind :open
+               :token/location {:loc/start 1 :loc/end 2}}
+              {:token/lexeme ")"
+               :token/kind :close
+               :token/location {:loc/start 2 :loc/end 3}}]
+             {:token/lexeme " "
+              :token/kind :whitespace
+              :token/location {:loc/start 3 :loc/end 4}}
+             [{:token/lexeme "("
+               :token/kind :open
+               :token/location {:loc/start 4 :loc/end 5}}
+              {:token/lexeme ")"
+               :token/kind :close
+               :token/location {:loc/start 5 :loc/end 6}}]
+             {:token/lexeme "}"
+              :token/kind :close
+              :token/location {:loc/start 6 :loc/end 7}}]])))
+
+(t/deftest tokens->cst-example
+  (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
+        tokens (src/lex s)
+        cst (src/tokens->cst tokens)]
+    (t/is (= (walk/prewalk #(or (:token/lexeme %) %) cst)
+             [["(" "def" " " "^" ":private" " " "foo" " "
+               ["[" "1" " " "\"bar\"" "]"]
+               ")"]
+              " " "; comment"]))
+    (t/is (mapv vector? cst) [true false false])
+    (t/is (= (-> cst first first :token/lexeme) "("))
+    (t/is (= (-> cst first last :token/lexeme) ")"))
+    (t/is (= tokens (flatten cst)))))
 
 (t/deftest str->definition-name
   (t/are [s expected] (= (src/str->definition-name s) expected)

@@ -318,6 +318,60 @@ litt.src/close?
 litt.src/meta?
 ```
 
+De konkrete syntakstrærene vi bygger vil bestå av nøyaktig de samme
+tokens som vi får fra leksingen, organisert i et *tre*. Hver løvnode i
+det resulterende treet svarer til et token fra input. Hver interne node
+(altså node som ikke er et løv) bidrar til struktur snarere enn innhold.
+En in-order traversering av et konkret syntakstre vil gi den samme
+sekvensen med tokens som ble gitt som input. Disse trærene, der all data
+forekommer i løv, lar seg representere veldig pent med nøstede
+sekvenser. For Clojure-kode blir dette veldig enkelt: for hvert token
+som oppfyller predikatet `open?` introduserer vi et lag med nøsting, og
+for hvert token som oppfyller predikatet `close?` avslutter vi dette
+laget.
+
+Mer konkret vil vi operere med en *stack av trær*, som er initialisert
+med et tomt tre. Stacken er representert som en liste, der det er enkelt
+legge til og hente ut første elementet; vi kaller dette toppen av
+stacken. Trær er representert som vektorer, der det er enkelt å legge
+til på slutten. Treet som ligger på toppen av stacken er det som får
+solskinn til å spire og gro; det er altså det treet som til en hver tid
+vokser. Når vi møter et token som åpner, så planter vi et nytt tre på
+toppen av stacken, og dette treet inneholder tokenet som åpner. Når vi
+møter et token som lukker, så tilføyer vi tokenet som siste barn av
+treet som ligger på toppen av stacken; dette treet er nå ferdig utgrodd
+og kan tilføyes til treet som ligger under på stacken. Tokens som
+hverken åpner eller lukker tilføyes treet som ligger på toppen av
+stacken.
+
+Dette samles sammen i én `reduce` over sekvensen av tokens som er gitt
+som input.
+
+`litt.src/tokens->cst`{=litt}
+
+Vi kan illustrere et par helt enkle konkrete syntakstrær i form av
+tester. Det første viser at den tomme strengen gir et tomt tre. Den
+andre viser uttrykket `{() ()}` som er et map som består av to tomme
+lister; dette forventer vi gir en vektor med tre elementer: en vektor
+med det første parentesuttrykket, et mellomrom, og en vektor med det
+andre parentesuttrykket.
+
+`litt.src-test/tokens->cst-basic`{=litt}
+
+Vi ser også på et litt mer sammensatt uttrykk som er tilsvarende
+uttrykket som ble brukt i `lex-example`. Den første testen gjør en
+vandring over det konkrete syntakstreet, og henter ut leksemene mens den
+bevarer den nøstede strukturen. Vi sjekker at dette gir oss delstrengene
+fra input, nøstet på fornuftig vis. Videre sjekker vi at første
+elementet av det konkrete syntakstreet er en vektor (altså et subtre),
+men de to resterende (mellomrommet og kommentaren) ikke er vektorer og
+dermed er løv. Videre sjekker vi at det første uttrykket er en vektor
+hvor første og siste leksem er henholdsvis en åpneparentes og en
+lukkeparentes. Til slutt flater vi ut strukturen (som svarer til en
+in-order traversering) og sjekker at det gir oss samme liste med tokens
+som vi får fra leksingen.j
+
+`litt.src-test/tokens->cst-example`{=litt}
 
 ## Definisjonsnavn
 
