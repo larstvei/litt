@@ -1,8 +1,6 @@
 (ns litt.src
   (:require
-   [clojure.string :as s]
-   [clojure.walk :as walk]
-   [edamame.core :as e]))
+   [clojure.string :as s]))
 
 (def lexeme-spec
   [[:whitespace #"[\s,]+"]
@@ -71,69 +69,108 @@
       (reduce (list []) tokens)
       (first)))
 
-(defn macro? [form]
-  (and (symbol? form)
-       (:macro (meta (resolve form)))))
+(defn ast-add-node [ast node]
+  (update ast :ast/children (fnil conj []) node))
 
-(defn obj-type [leaf]
-  (cond (coll? leaf) :coll
-        (keyword? leaf) :keyword
-        (nil? leaf) :nil
-        (number? leaf) :number
-        (special-symbol? leaf) :special-symbol
-        (string? leaf) :string
-        (macro? leaf) :macro
-        (symbol? leaf) :symbol
-        :else :other))
+(defn ast-add-meta-node [ast node]
+  (update ast :ast/meta (fnil conj []) node))
 
-(defn postprocess [{:keys [obj loc]}]
-  {:ast/entry obj
-   :ast/type (obj-type obj)
-   :ast/leaf? (not (coll? obj))
-   :ast/location {:loc/line (:row loc)
-                  :loc/column (:col loc)
-                  :loc/line-end (:end-row loc)
-                  :loc/column-end (:end-col loc)}})
+(defn ast-set-node-type [ast type]
+  (assoc ast :ast/node type))
 
-(def parse-opts {:all true :postprocess postprocess})
+(defn ast-inherit-location [ast {:token/keys [location]}]
+  (let [{:loc/keys [start end]} location]
+    (-> ast
+        (update-in [:ast/location :loc/start] (fnil min start) start)
+        (update-in [:ast/location :loc/end] (fnil max end) end))))
 
-(defn parse-definition [s]
-  (e/parse-string s parse-opts))
+(defn ast-from-token [token]
+  (-> {:ast/node :leaf}
+      (assoc :ast/token token)
+      (ast-inherit-location token)))
 
-(defn parse-definitions [s]
-  (->> (e/parse-string-all s parse-opts)
-       (filter (comp #{:symbol} :ast/type second :ast/entry))))
+(defn ast-nth [ast index]
+  (->> (:ast/children ast)
+       (remove (comp #{:meta} :ast/node))
+       (drop index)
+       (first)))
 
-(defn ast->form [ast]
-  (walk/prewalk (fn [node] (or (:ast/entry node) node)) ast))
+(defn ast-tokens [ast]
+  (if (= :leaf (:ast/node ast))
+    [(:ast/token ast)]
+    (mapcat ast-tokens (:ast/children ast))))
+
+(defn ast-definition-node? [ast]
+  (and (= (:ast/node ast) :list)
+       (-> ast (ast-nth 0) :ast/token :token/kind (= :definition))))
+
+(def token-open-type
+  (comp {"(" :list "[" :vec "{" :map} :token/lexeme))
+
+(defn cst->ast
+  ([cst] (cst->ast {:ast/node :root} cst))
+  ([node [x & xs]]
+   (cond
+     (nil? x) node
+     (vector? x) (recur (ast-add-node node (cst->ast x)) xs)
+     (skip? x) (recur node xs)
+     (meta? x) (as-> (cst->ast (take 1 xs)) meta-node
+                 (ast-set-node-type meta-node :meta)
+                 (ast-add-node node meta-node)
+                 (recur meta-node (rest xs)))
+     (open? x) (-> node
+                   (ast-set-node-type (token-open-type x))
+                   (ast-inherit-location x)
+                   (recur xs))
+     (close? x) (recur (ast-inherit-location node x) xs)
+     :else (recur (ast-add-node node (ast-from-token x)) xs))))
+
+(defn parse [s]
+  (-> s lex tokens->cst cst->ast))
+
+(defn loc-substring [s {:loc/keys [start end]}]
+  (subs s start end))
 
 (defn str->definition-name [s]
-  (->> (map symbol (s/split s #"/|@"))
-       (zipmap [:ns :name :dispatch])))
+  (zipmap [:ns :name :dispatch] (s/split s #"/|@")))
 
 (defn definition-name->str [{:keys [ns name dispatch]}]
   (str ns (when name "/") name (when dispatch "@") dispatch))
 
-(defn extract-definition-name [[op name dispatch]]
-  (cond-> {}
-    (not= op 'ns) (assoc :name name)
-    (= op 'defmethod) (assoc :dispatch dispatch)))
+(defn ast-extract-definition-name [{:def/keys [src] :as definition} ast]
+  (let [op (-> ast (ast-nth 0) :ast/token :token/lexeme)
+        name (-> ast (ast-nth 1) :ast/token :token/lexeme)
+        dispatch (delay (loc-substring src (:ast/location (ast-nth ast 2))))]
+    (cond-> {:ns (:def/ns definition)}
+      (not= op "ns") (assoc :name name)
+      (= op "defmethod") (assoc :dispatch @dispatch))))
 
-(defn definition-info [filename ns-name lines ast]
-  (let [{:loc/keys [line line-end] :as location} (:ast/location ast)
-        form (ast->form ast)
-        definition-name (-> (extract-definition-name form)
-                            (assoc :ns ns-name))]
-    {:def/filename filename
-     :def/ast ast
-     :def/name definition-name
-     :def/location location
-     :def/form form
-     :def/start line
-     :def/lines (subvec lines (dec line) line-end)}))
+(defn definition-info [definition {:ast/keys [location] :as ast}]
+  (let [definition-name (ast-extract-definition-name definition ast)]
+    (-> definition
+        (assoc :def/location location)
+        (assoc :def/ast ast)
+        (assoc :def/name definition-name)
+        (update :def/src loc-substring location))))
 
 (defn definitions [{:file/keys [filename content]}]
-  (let [asts (parse-definitions content)
-        ns-name (-> asts first :ast/entry second :ast/entry)
-        lines (vec (s/split-lines content))]
-    (map (partial definition-info filename ns-name lines) asts)))
+  (let [ast (parse content)
+        ns-name (-> ast (ast-nth 0) (ast-nth 1) :ast/token :token/lexeme)]
+    (-> (partial definition-info {:def/filename filename
+                                  :def/ns ns-name
+                                  :def/src content})
+        (map (filter ast-definition-node? (:ast/children ast))))))
+
+(defn str-insert [s ins i]
+  (str (subs s 0 i) ins (subs s i)))
+
+(defn wrap-css-class [offset src {:token/keys [kind location] :as token}]
+  (let [span (str "<span class=\"" (name kind) "\">")
+        span-end "</span>"]
+    (-> src
+        (str-insert span-end (- (:loc/end location) offset))
+        (str-insert span (- (:loc/start location) offset)))))
+
+(defn highlight [{:def/keys [ast location src]}]
+  (->> (reverse (ast-tokens ast))
+       (reduce (partial wrap-css-class (:loc/start location)) src)))

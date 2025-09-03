@@ -6,7 +6,7 @@
    [clojure.string :as s]
    [hiccup2.core :as hiccup]
    [litt.db :as db]
-   [litt.highlight :as highlight]
+   [litt.src :as src]
    [pandocir.core :as pandocir]))
 
 (defn call-pandoc [content]
@@ -30,9 +30,7 @@
   {:pandocir.type/raw-inline
    (fn [{:pandocir/keys [format text]}]
      (case format
-       "litt" (->> (db/get-definition db text)
-                   highlight/highlight
-                   include-code-block)
+       "litt" (include-code-block (src/highlight (db/get-definition db text)))
        "litt-file" (assoc {:pandocir/type :pandocir.type/code-block}
                           :pandocir/text (slurp text))))
 
@@ -40,7 +38,7 @@
    (fn [{:pandocir/keys [format text]}]
      (when (= format "litt")
        (->> (s/split-lines text)
-            (map (comp highlight/highlight (partial db/get-definition db)))
+            (map #(src/highlight (db/get-definition db %)))
             (s/join "\n")
             include-code-block)))})
 

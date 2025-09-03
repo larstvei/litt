@@ -309,7 +309,7 @@ beskriver her er en hierarkisk struktur, og slike strukturer kan
 representeres som et tre.
 
 Her er noen enkle predikater som lar oss sjekke typen til et token med
-litt mindre sermoni:
+litt mindre seremoni:
 
 ```{=litt}
 litt.src/skip?
@@ -352,9 +352,10 @@ som input.
 Vi kan illustrere et par helt enkle konkrete syntakstrær i form av
 tester. Det første viser at den tomme strengen gir et tomt tre. Den
 andre viser uttrykket `{() ()}` som er et map som består av to tomme
-lister; dette forventer vi gir en vektor med tre elementer: en vektor
-med det første parentesuttrykket, et mellomrom, og en vektor med det
-andre parentesuttrykket.
+lister; dette forventer vi gir en vektor med fem elementer:
+åpnekrøllparentesen, en vektor med det første parentesuttrykket, et
+mellomrom, en vektor med det andre parentesuttrykket og til slutt
+lukkekrøllparentesen.
 
 `litt.src-test/tokens->cst-basic`{=litt}
 
@@ -369,9 +370,14 @@ dermed er løv. Videre sjekker vi at det første uttrykket er en vektor
 hvor første og siste leksem er henholdsvis en åpneparentes og en
 lukkeparentes. Til slutt flater vi ut strukturen (som svarer til en
 in-order traversering) og sjekker at det gir oss samme liste med tokens
-som vi får fra leksingen.j
+som vi får fra leksingen.
 
 `litt.src-test/tokens->cst-example`{=litt}
+
+### Fra konkrete til abstrakte syntakstrær
+
+Der det konkrete syntakstreet fanger det vi ser, vil et abstrakt
+syntakstre heller fange det vi mener.
 
 ## Definisjonsnavn
 
