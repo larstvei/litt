@@ -28,7 +28,7 @@ Merk at dette utgjør en betydelig begrensning i Litt. Det er ikke mulig
 den litterære teksten. Litt omfavner denne begrensningen og tar følgende
 ståsted: Dersom det er vanskelig å formidle intensjonen med en
 definisjon, så bør definisjonen brytes opp i flere definisjoner. Med
-andre ord oppfordrer Litt til holde definisjoner små.
+andre ord oppfordrer Litt til å holde definisjoner små.
 
 For å kunne identifisere definisjonene i en Clojure-fil gjør Litt noen
 litt grove antagelser:
@@ -50,11 +50,11 @@ for skripting.
 
 Den siste antagelsen, som er at andre element i formen angir navnet på
 det som defineres, er sant for de fleste måter noe kan defineres i
-Clojure. Det er noen unntak, for eksempel `defmethod`, hvor navnet er en
+Clojure. Det finnes unntak, for eksempel `defmethod`, hvor navnet er en
 kombinasjon av første og andre element, og `extend-type` som brukes for
-å implementere en [protokoll](https://clojure.org/reference/protocols).
-Litt implementerer en løsning for `defmethod`, men har for øyeblikket
-ingen løsning for `extend-type`.
+å implementere en [protokoll](https://clojure.org/reference/protocols)
+(og kanskje flere andre). Litt implementerer en løsning for `defmethod`,
+men har for øyeblikket ingen løsning for `extend-type`.
 
 ## Navnerom
 
@@ -219,7 +219,7 @@ funksjonen `symbol-kind` som er beskrevet nedenfor.
 I Clojure har vi mange symboler som bør utheves, for eksempel
 `if`{.special-symbol} og `let`{.macro}. Symbolet `if`{.special-symbol}
 kalles et spesielt symbol, fordi det er implementert som et primitiv i
-språket.`let`{.macro} er ikke et primitivt, men heller en makro. Denne
+språket. `let`{.macro} er ikke et primitivt, men heller en makro. Denne
 distinksjonen er ikke viktig for Litt, men vi ønsker å skille disse fra
 andre symboler (primært for syntaksfremheving). Det er en liten håndfull
 spesielle symboler, som kan identifiseres med den innebygde funksjonen
