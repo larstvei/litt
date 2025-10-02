@@ -69,64 +69,19 @@
       (reduce (list []) tokens)
       (first)))
 
-(defn ast-add-node [ast node]
-  (update ast :ast/children (fnil conj []) node))
-
-(defn ast-add-meta-node [ast node]
-  (update ast :ast/meta (fnil conj []) node))
-
-(defn ast-set-node-type [ast type]
-  (assoc ast :ast/node type))
-
-(defn ast-inherit-location [ast {:token/keys [location]}]
-  (let [{:loc/keys [start end]} location]
-    (-> ast
-        (update-in [:ast/location :loc/start] (fnil min start) start)
-        (update-in [:ast/location :loc/end] (fnil max end) end))))
-
-(defn ast-from-token [token]
-  (-> {:ast/node :leaf}
-      (assoc :ast/token token)
-      (ast-inherit-location token)))
-
-(defn ast-nth [ast index]
-  (->> (:ast/children ast)
-       (remove (comp #{:meta} :ast/node))
-       (drop index)
-       (first)))
-
-(defn ast-tokens [ast]
-  (if (= :leaf (:ast/node ast))
-    [(:ast/token ast)]
-    (mapcat ast-tokens (:ast/children ast))))
-
-(defn ast-definition-node? [ast]
-  (and (= (:ast/node ast) :list)
-       (-> ast (ast-nth 0) :ast/token :token/kind (= :definition))))
-
-(def token-open-type
-  (comp {"(" :list "[" :vec "{" :map} :token/lexeme))
-
-(defn cst->ast
-  ([cst] (cst->ast {:ast/node :root} cst))
-  ([node [x & xs]]
-   (cond
-     (nil? x) node
-     (vector? x) (recur (ast-add-node node (cst->ast x)) xs)
-     (skip? x) (recur node xs)
-     (meta? x) (as-> (cst->ast (take 1 xs)) meta-node
-                 (ast-set-node-type meta-node :meta)
-                 (ast-add-node node meta-node)
-                 (recur meta-node (rest xs)))
-     (open? x) (-> node
-                   (ast-set-node-type (token-open-type x))
-                   (ast-inherit-location x)
-                   (recur xs))
-     (close? x) (recur (ast-inherit-location node x) xs)
-     :else (recur (ast-add-node node (ast-from-token x)) xs))))
-
 (defn parse [s]
-  (-> s lex tokens->cst cst->ast))
+  (-> s lex tokens->cst))
+
+(defn prune [[node & tree]]
+  (lazy-seq
+   (cond (nil? node) nil
+         (or (skip? node) (open? node) (close? node)) (prune tree)
+         (meta? node) (prune (rest tree))
+         :else (cons node (prune tree)))))
+
+(defn form-location [form]
+  {:loc/start (:loc/start (:token/location (first form)))
+   :loc/end (:loc/end (:token/location (last form)))})
 
 (defn loc-substring [s {:loc/keys [start end]}]
   (subs s start end))
@@ -137,29 +92,34 @@
 (defn definition-name->str [{:keys [ns name dispatch]}]
   (str ns (when name "/") name (when dispatch "@") dispatch))
 
-(defn ast-extract-definition-name [{:def/keys [src] :as definition} ast]
-  (let [op (-> ast (ast-nth 0) :ast/token :token/lexeme)
-        name (-> ast (ast-nth 1) :ast/token :token/lexeme)
-        dispatch (delay (loc-substring src (:ast/location (ast-nth ast 2))))]
-    (cond-> {:ns (:def/ns definition)}
-      (not= op "ns") (assoc :name name)
-      (= op "defmethod") (assoc :dispatch @dispatch))))
+(defn tokens->str [tokens]
+  (apply str (map :token/lexeme (flatten tokens))))
 
-(defn definition-info [definition {:ast/keys [location] :as ast}]
-  (let [definition-name (ast-extract-definition-name definition ast)]
-    (-> definition
-        (assoc :def/location location)
-        (assoc :def/ast ast)
-        (assoc :def/name definition-name)
-        (update :def/src loc-substring location))))
+(defn definition-name [definition op name dispatch]
+  (let [op-str (:token/lexeme op)
+        name-str (tokens->str [name])
+        dispatch-str (tokens->str [dispatch])]
+    (cond-> {:ns (:def/ns definition)}
+      (not= op-str "ns") (assoc :name name-str)
+      (= op-str "defmethod") (assoc :dispatch dispatch-str))))
+
+(defn definition-info [definition parse-tree]
+  (let [[op name dispatch] (prune parse-tree)
+        location (form-location parse-tree)]
+    (when (= :definition (:token/kind op))
+      (-> definition
+          (assoc :def/location location)
+          (assoc :def/parse-tree parse-tree)
+          (assoc :def/name (definition-name definition op name dispatch))
+          (update :def/src loc-substring location)))))
 
 (defn definitions [{:file/keys [filename content]}]
-  (let [ast (parse content)
-        ns-name (-> ast (ast-nth 0) (ast-nth 1) :ast/token :token/lexeme)]
+  (let [parse-tree (parse content)
+        ns-name (-> parse-tree first prune (nth 1) :token/lexeme)]
     (-> (partial definition-info {:def/filename filename
                                   :def/ns ns-name
                                   :def/src content})
-        (map (filter ast-definition-node? (:ast/children ast))))))
+        (keep parse-tree))))
 
 (defn str-insert [s ins i]
   (str (subs s 0 i) ins (subs s i)))
@@ -171,6 +131,6 @@
         (str-insert span-end (- (:loc/end location) offset))
         (str-insert span (- (:loc/start location) offset)))))
 
-(defn highlight [{:def/keys [ast location src]}]
-  (->> (reverse (ast-tokens ast))
+(defn highlight [{:def/keys [parse-tree location src]}]
+  (->> (reverse (flatten parse-tree))
        (reduce (partial wrap-css-class (:loc/start location)) src)))

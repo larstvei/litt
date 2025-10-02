@@ -112,8 +112,7 @@ Vi deler gjerne denne prosessen opp i flere steg. Først slår vi sammen
 tegn som hører sammen i det som ofte kalles *leksem*. I prosessen kan vi
 tilføye noe informasjon, som gir oss det som ofte kalles *tokens*.
 Deretter kan vi strukturere tokens i en trestruktur, som gir opphav til
-det vi kan kalle et *konkret syntakstre*. Til slutt kan vi trekke ut det
-vesentlige og ende opp med et *abstrakt syntakstre*.
+det vi kan kalle et *konkret syntakstre*.
 
 ### Oppdeling
 
@@ -373,11 +372,6 @@ in-order traversering) og sjekker at det gir oss samme liste med tokens
 som vi får fra leksingen.
 
 `litt.src-test/tokens->cst-example`{=litt}
-
-### Fra konkrete til abstrakte syntakstrær
-
-Der det konkrete syntakstreet fanger det vi ser, vil et abstrakt
-syntakstre heller fange det vi mener.
 
 ## Definisjonsnavn
 
