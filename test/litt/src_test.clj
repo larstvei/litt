@@ -103,36 +103,35 @@
     (t/is (= (:loc/start (:def/location info)) 1))
     (t/is (= (:def/src info) "(defn foo []\n  'bar)"))))
 
-;; (t/deftest definitions
-;;   (t/are [file expected] (= (src/definitions file) expected)
-;;     {:file/filename "empty.clj"
-;;      :file/content ""}
-;;     '{}
+(t/deftest definitions
+  (t/are
+      [file expected]
+      (->> (src/definitions file)
+           (map #(dissoc % :def/parse-tree :def/location))
+           (= expected))
 
-;;     {:file/filename "a.clj"
-;;      :file/content "(ns a)"}
-;;     '{{:ns a}
-;;       {:def/filename "a.clj"
-;;        :def/start 1
-;;        :def/form (ns a)
-;;        :def/lines ["(ns a)"]}}
+    {:file/filename "empty.clj"
+     :file/content ""}
+    '()
 
-;;     {:file/filename "b.clj"
-;;      :file/content "(ns b)\n(defn f [] 1)\n(defn g [] 2)"}
-;;     '{{:ns b}
-;;       {:def/filename "b.clj"
-;;        :def/start 1
-;;        :def/form (ns b)
-;;        :def/lines ["(ns b)"]}
+    {:file/filename "a.clj"
+     :file/content "(ns a)"}
+    '({:def/filename "a.clj",
+       :def/ns "a",
+       :def/src "(ns a)",
+       :def/name {:ns "a"}})
 
-;;       {:ns b :name f}
-;;       {:def/filename "b.clj"
-;;        :def/start 2
-;;        :def/form (defn f [] {:form/wrapped 1})
-;;        :def/lines ["(defn f [] 1)"]}
-
-;;       {:ns b :name g}
-;;       {:def/filename "b.clj"
-;;        :def/start 3
-;;        :def/form (defn g [] {:form/wrapped 2})
-;;        :def/lines ["(defn g [] 2)"]}}))
+    {:file/filename "b.clj"
+     :file/content "(ns b)\n(defn f [] 1)\n(defn g [] 2)"}
+    '({:def/filename "b.clj",
+       :def/ns "b",
+       :def/src "(ns b)",
+       :def/name {:ns "b"}}
+      {:def/filename "b.clj",
+       :def/ns "b",
+       :def/src "(defn f [] 1)",
+       :def/name {:ns "b", :name "f"}}
+      {:def/filename "b.clj",
+       :def/ns "b",
+       :def/src "(defn g [] 2)",
+       :def/name {:ns "b", :name "g"}})))
