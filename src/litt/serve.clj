@@ -7,6 +7,7 @@
    [litt.typesetting :as typesetting]
    [org.httpkit.server :as server]))
 
+(def live-reload-js (slurp "resources/js/live-reload.js"))
 (defonce server (atom nil))
 (defonce clients (atom #{}))
 
@@ -32,7 +33,7 @@
 
 (defn lit-body [db path]
   (->> (typesetting/md-file->html db path)
-       (list [:script (hiccup/raw (slurp "resources/js/live-reload.js"))])
+       (list [:script (hiccup/raw live-reload-js)])
        (typesetting/page db)))
 
 (defn fallback-body [{:sources/keys [lit] :as db}]
