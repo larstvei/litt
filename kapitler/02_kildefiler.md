@@ -112,7 +112,10 @@ Vi deler gjerne denne prosessen opp i flere steg. Først slår vi sammen
 tegn som hører sammen i det som ofte kalles *leksem*. I prosessen kan vi
 tilføye noe informasjon, som gir oss det som ofte kalles *tokens*.
 Deretter kan vi strukturere tokens i en trestruktur, som gir opphav til
-det vi kan kalle et *konkret syntakstre*.
+det vi kan kalle et *konkret syntakstre*. Ofte vil dette treet
+prosesseres videre og omdannes til et *abstrakt syntakstre*, som egner
+seg bedre for semantisk analyse -- men Litt kan begrense seg til å jobbe
+rent syntaktisk.
 
 ### Oppdeling
 
