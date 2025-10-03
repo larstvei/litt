@@ -93,18 +93,15 @@
     {:ns "ns" :name "f"}               "ns/f"
     {:ns "ns" :name "m" :dispatch "d"} "ns/m@d"))
 
-
-
-;; (t/deftest definition-info
-;;   (let [info (src/definition-info
-;;                "foo.clj"
-;;                'foo
-;;                ["" "(defn foo []" "  'bar)" ""]
-;;                (src/parse "\n(defn foo []\n  'bar)\n"))]
-;;     (t/is (= (:def/filename info) "foo.clj"))
-;;     (t/is (= (:def/start info) 2))
-;;     (t/is (= (:def/form info) '(defn foo [] 'bar)))
-;;     (t/is (= (:def/lines info) ["(defn foo []" "  'bar)"]))))
+(t/deftest definition-info
+  (let [src "\n(defn foo []\n  'bar)\n"
+        info (src/definition-info
+               {:def/filename "foo.clj" :def/ns "foo" :def/src src}
+               (second (src/parse src)))]
+    (t/is (= (:def/filename info) "foo.clj"))
+    (t/is (= (:def/ns info) "foo"))
+    (t/is (= (:loc/start (:def/location info)) 1))
+    (t/is (= (:def/src info) "(defn foo []\n  'bar)"))))
 
 ;; (t/deftest definitions
 ;;   (t/are [file expected] (= (src/definitions file) expected)
