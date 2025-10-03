@@ -77,6 +77,7 @@
    (cond (nil? node) nil
          (or (skip? node) (open? node) (close? node)) (prune tree)
          (meta? node) (prune (rest tree))
+         (vector? node) (cons (prune node) (prune tree))
          :else (cons node (prune tree)))))
 
 (defn form-location [form]
