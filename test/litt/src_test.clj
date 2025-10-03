@@ -42,9 +42,9 @@
     (t/is (= (-> tokens last  :token/location :loc/end) (count s)))
     (t/is (= (apply str lexemes) s))))
 
-(t/deftest tokens->cst-basic
-  (t/is (= (src/tokens->cst (src/lex "")) []))
-  (t/is (= (src/tokens->cst (src/lex "{() ()}"))
+(t/deftest tokens->parse-tree-basic
+  (t/is (= (src/tokens->parse-tree (src/lex "")) []))
+  (t/is (= (src/tokens->parse-tree (src/lex "{() ()}"))
            [[{:token/lexeme "{"
               :token/kind :open
               :token/location {:loc/start 0 :loc/end 1}}
@@ -67,19 +67,19 @@
               :token/kind :close
               :token/location {:loc/start 6 :loc/end 7}}]])))
 
-(t/deftest tokens->cst-example
+(t/deftest tokens->parse-tree-example
   (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
         tokens (src/lex s)
-        cst (src/tokens->cst tokens)]
-    (t/is (= (walk/prewalk #(or (:token/lexeme %) %) cst)
+        parse-tree (src/tokens->parse-tree tokens)]
+    (t/is (= (walk/prewalk #(or (:token/lexeme %) %) parse-tree)
              [["(" "def" " " "^" ":private" " " "foo" " "
                ["[" "1" " " "\"bar\"" "]"]
                ")"]
               " " "; comment"]))
-    (t/is (mapv vector? cst) [true false false])
-    (t/is (= (-> cst first first :token/lexeme) "("))
-    (t/is (= (-> cst first last :token/lexeme) ")"))
-    (t/is (= tokens (flatten cst)))))
+    (t/is (mapv vector? parse-tree) [true false false])
+    (t/is (= (-> parse-tree first first :token/lexeme) "("))
+    (t/is (= (-> parse-tree first last :token/lexeme) ")"))
+    (t/is (= tokens (flatten parse-tree)))))
 
 (t/deftest str->definition-name
   (t/are [s expected] (= (src/str->definition-name s) expected)

@@ -59,7 +59,7 @@
 (defn close? [t] (= (:token/kind t) :close))
 (defn meta? [t] (= (:token/kind t) :meta))
 
-(defn tokens->cst [tokens]
+(defn tokens->parse-tree [tokens]
   (-> (fn [[tree & stack] token]
         (cond (open? token) (conj stack tree [token])
               (close? token) (->> (conj tree token)
@@ -70,7 +70,7 @@
       (first)))
 
 (defn parse [s]
-  (-> s lex tokens->cst))
+  (-> s lex tokens->parse-tree))
 
 (defn prune [[node & tree]]
   (lazy-seq

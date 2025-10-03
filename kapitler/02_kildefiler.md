@@ -349,7 +349,7 @@ stacken.
 Dette samles sammen i én `reduce` over sekvensen av tokens som er gitt
 som input.
 
-`litt.src/tokens->cst`{=litt}
+`litt.src/tokens->parse-tree`{=litt}
 
 Vi kan illustrere et par helt enkle konkrete syntakstrær i form av
 tester. Det første viser at den tomme strengen gir et tomt tre. Den
@@ -359,7 +359,7 @@ lister; dette forventer vi gir en vektor med fem elementer:
 mellomrom, en vektor med det andre parentesuttrykket og til slutt
 lukkekrøllparentesen.
 
-`litt.src-test/tokens->cst-basic`{=litt}
+`litt.src-test/tokens->parse-tree-basic`{=litt}
 
 Vi ser også på et litt mer sammensatt uttrykk som er tilsvarende
 uttrykket som ble brukt i `lex-example`. Den første testen gjør en
@@ -374,7 +374,7 @@ lukkeparentes. Til slutt flater vi ut strukturen (som svarer til en
 in-order traversering) og sjekker at det gir oss samme liste med tokens
 som vi får fra leksingen.
 
-`litt.src-test/tokens->cst-example`{=litt}
+`litt.src-test/tokens->parse-tree-example`{=litt}
 
 ## Definisjonsnavn
 
