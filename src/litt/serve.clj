@@ -61,15 +61,14 @@
     :else
     (assoc html-not-found :body (fallback-body db))))
 
+(defn update-clients [db]
+  (doseq [[lit-path ch] @clients
+          :let [html (hiccup/html (typesetting/md-file->html db lit-path))
+                encoded (s/replace (str "data: " html) "\n" "\ndata: ")]]
+    (server/send! ch (str encoded "\n\n") false)))
+
 (defn start-server! []
   (let [handler (fn [req] (request-handler @db/db req))]
     (when (fn? @server) (@server))
-    (add-watch
-     db/db
-     :live-reload
-     (fn [_ _ _ db]
-       (doseq [[lit-path ch] @clients
-               :let [html (hiccup/html (typesetting/md-file->html db lit-path))
-                     encoded (s/replace (str "data: " html) "\n" "\ndata: ")]]
-         (server/send! ch (str encoded "\n\n") false))))
+    (add-watch db/db :live-reload (fn [_ _ _ db] (update-clients db)))
     (reset! server (server/run-server handler {:port 8080}))))
