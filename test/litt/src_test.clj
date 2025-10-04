@@ -22,12 +22,8 @@
 (t/deftest lex-basic
   (t/is (= (src/lex "") '()))
   (t/is (= (src/lex "()")
-           '({:token/lexeme "("
-              :token/kind :open
-              :token/location {:loc/start 0 :loc/end 1}}
-             {:token/lexeme ")"
-              :token/kind :close
-              :token/location {:loc/start 1 :loc/end 2}}))))
+           (list (src/make-token "(" :open 0 1)
+                 (src/make-token ")" :close 1 2)))))
 
 (t/deftest lex-example
   (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
@@ -45,27 +41,13 @@
 (t/deftest tokens->parse-tree-basic
   (t/is (= (src/tokens->parse-tree (src/lex "")) []))
   (t/is (= (src/tokens->parse-tree (src/lex "{() ()}"))
-           [[{:token/lexeme "{"
-              :token/kind :open
-              :token/location {:loc/start 0 :loc/end 1}}
-             [{:token/lexeme "("
-               :token/kind :open
-               :token/location {:loc/start 1 :loc/end 2}}
-              {:token/lexeme ")"
-               :token/kind :close
-               :token/location {:loc/start 2 :loc/end 3}}]
-             {:token/lexeme " "
-              :token/kind :whitespace
-              :token/location {:loc/start 3 :loc/end 4}}
-             [{:token/lexeme "("
-               :token/kind :open
-               :token/location {:loc/start 4 :loc/end 5}}
-              {:token/lexeme ")"
-               :token/kind :close
-               :token/location {:loc/start 5 :loc/end 6}}]
-             {:token/lexeme "}"
-              :token/kind :close
-              :token/location {:loc/start 6 :loc/end 7}}]])))
+           [[(src/make-token "{" :open 0 1)
+             [(src/make-token "(" :open 1 2)
+              (src/make-token ")" :close 2 3)]
+             (src/make-token " " :whitespace 3 4)
+             [(src/make-token "(" :open 4 5)
+              (src/make-token ")" :close 5 6)]
+             (src/make-token "}" :close 6 7)]])))
 
 (t/deftest tokens->parse-tree-example
   (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
