@@ -376,6 +376,22 @@ som vi får fra leksingen.
 
 `litt.src-test/tokens->parse-tree-example`{=litt}
 
+## Stusse treet
+
+Det konkrete syntakstreet inneholder på mange måter for mye informasjon;
+vi vet hvor alle parenteser starter og slutter, alle kommentarer og alle
+blanke. Det viktigste for Litt er å kunne skille former på toppnivå,
+identifisere definisjoner, og hente ut navnet som defineres; da er det
+upraktisk å måtte se forbi parenteser, metadata, kommentarer, blanke,
+og så videre. Funksjonen nedenfor stusser treet for løv som ikke bidrar
+med så mye informasjon. Mer spesifikt stusser den vekk alt som oppfyller
+`skip?`, `open?` og `close?`. For noder som oppfyller `meta?` vet vi at
+den etterfølgende noden skal tolkes som metadata, som gjør at vi stusser
+både noden som oppfyller `meta?` og den etterfølgende. Dette gjøres
+rekursivt på hele treet.
+
+`litt.src/prune`{=litt}
+
 ## Definisjonsnavn
 
 I Litt er et definisjonsnavn representert som et map med inntil tre
