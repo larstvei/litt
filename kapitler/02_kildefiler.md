@@ -286,6 +286,16 @@ ut.
 
 `litt.src-test/lex-basic`{=litt}
 
+Merk at noe skurrer i koden over hvis den leses med strengt typa
+briller. I [Clojure tolkes
+likhetstegnet](https://clojure.org/guides/equality#_introduction) `=`
+som en ekvivalensrelasjon der innholdet sammenlignes uavhengig av typen.
+Det gjør at en liste og en vektor er like, dersom de inneholder de samme
+elementene i samme rekkefølge. Derfor kan vi liste opp kall på
+`src/make-token` i en vektor til fordel for en liste, som gjør at vi slipper
+å danse rundt med kall på `list` eller
+[syntax-quote](https://clojure.org/reference/reader#syntax-quote).
+
 Siden denne funksjonen syr sammen en del funksjonalitet kan det være
 nyttig å teste den litt nøyere. Vi tar utgangspunkt i en streng `s` som
 inneholder de fleste type tokens. Under sjekker vi at typene til de fire

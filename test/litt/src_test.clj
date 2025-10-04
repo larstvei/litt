@@ -20,10 +20,10 @@
             :token/location {:loc/start 7 :loc/end 8}})))
 
 (t/deftest lex-basic
-  (t/is (= (src/lex "") '()))
+  (t/is (= (src/lex "") ()))
   (t/is (= (src/lex "()")
-           (list (src/make-token "(" :open 0 1)
-                 (src/make-token ")" :close 1 2)))))
+           [(src/make-token "(" :open 0 1)
+            (src/make-token ")" :close 1 2)])))
 
 (t/deftest lex-example
   (let [s "(def ^:private foo [1 \"bar\"]) ; comment"
