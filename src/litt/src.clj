@@ -72,13 +72,15 @@
 (defn parse [s]
   (-> s lex tokens->parse-tree))
 
-(defn prune [[node & tree]]
-  (lazy-seq
-   (cond (nil? node) nil
-         (or (skip? node) (open? node) (close? node)) (prune tree)
-         (meta? node) (prune (rest tree))
-         (vector? node) (cons (prune node) (prune tree))
-         :else (cons node (prune tree)))))
+(defn prune
+  ([tree] (prune tree []))
+  ([[node & tree] res]
+   (cond (nil? node) res
+         (skip? node) (recur tree res)
+         (or (open? node) (close? node)) (recur tree res)
+         (meta? node) (recur (rest tree) res)
+         (vector? node) (recur tree (conj res (prune node)))
+         :else (recur tree (conj res node)))))
 
 (defn form-location [form]
   {:loc/start (:loc/start (:token/location (first form)))
