@@ -403,6 +403,13 @@ rekursivt på hele treet.
 
 `litt.src/prune`{=litt}
 
+En litt uheldig konsekvens av stussingen er at det ikke lenger er mulig
+å skille mellom lister, vektorer og maps. Vi dokumenterer denne litt
+overraskende oppførselen gjennom tester. I tillegg eksemplifiserer vi
+hvordan stussingen fjerner alt utenom strukturen og symbolene.
+
+`litt.src-test/prune`{=litt}
+
 ## Definisjonsnavn
 
 I Litt er et definisjonsnavn representert som et map med inntil tre

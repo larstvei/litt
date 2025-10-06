@@ -63,6 +63,19 @@
     (t/is (= (-> parse-tree first last :token/lexeme) ")"))
     (t/is (= tokens (flatten parse-tree)))))
 
+(t/deftest prune
+  (t/are [s expected] (= (src/prune (src/parse s)) expected)
+    "" []
+    "()" [[]]
+    "[]" [[]]
+    "{}" [[]]
+    "() ()" [[] []]
+    "{() ()}" [[[] []]]
+    "symbol" [(src/make-token "symbol" :symbol 0 6)]
+    "(a [b] ; ok\nc)" [[(src/make-token "a" :symbol 1 2)
+                        [(src/make-token "b" :symbol 4 5)]
+                        (src/make-token "c" :symbol 12 13)]]))
+
 (t/deftest str->definition-name
   (t/are [s expected] (= (src/str->definition-name s) expected)
     "ns"     {:ns "ns"}
