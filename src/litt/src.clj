@@ -100,7 +100,7 @@
 
 (defn definition-name [definition op name dispatch]
   (let [op-str (:token/lexeme op)
-        name-str (tokens->str [name])
+        name-str (:token/lexeme name)
         dispatch-str (tokens->str [dispatch])]
     (cond-> {:ns (:def/ns definition)}
       (not= op-str "ns") (assoc :name name-str)

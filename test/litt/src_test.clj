@@ -89,14 +89,15 @@
     {:ns "ns" :name "m" :dispatch "d"} "ns/m@d"))
 
 (t/deftest definition-info
-  (let [src "\n(defn foo []\n  'bar)\n"
-        info (src/definition-info
-               {:def/filename "foo.clj" :def/ns "foo" :def/src src}
-               (second (src/parse src)))]
+  (let [src "(defn f []\n  'bar)"
+        definition {:def/filename "foo.clj" :def/ns "foo" :def/src src}
+        info (src/definition-info definition (first (src/parse src)))]
     (t/is (= (:def/filename info) "foo.clj"))
     (t/is (= (:def/ns info) "foo"))
-    (t/is (= (:loc/start (:def/location info)) 1))
-    (t/is (= (:def/src info) "(defn foo []\n  'bar)"))))
+    (t/is (= (:def/name info) {:ns "foo" :name "f"}))
+    (t/is (= (:loc/start (:def/location info)) 0))
+    (t/is (= (:loc/end (:def/location info)) (count src)))
+    (t/is (= (:def/src info) src))))
 
 (t/deftest definitions
   (t/are
