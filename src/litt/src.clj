@@ -116,7 +116,7 @@
 
 (defn definitions [{:file/keys [filename content]}]
   (let [parse-tree (parse content)
-        ns-name (-> parse-tree prune first (nth 1) :token/lexeme)]
+        ns-name (-> parse-tree prune first second :token/lexeme)]
     (-> (partial definition-info {:def/filename filename
                                   :def/ns ns-name
                                   :def/src content})
