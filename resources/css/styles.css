@@ -5,6 +5,7 @@
     --fg: light-dark(#37474F, #ECEFF4);
     --primary: light-dark(#673AB7, #81A1C1);
     --secondary: light-dark(#90A4AE, #677691);
+    --warning: light-dark(#FFAB91, #D08770);
     --tint: light-dark(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.05));
 }
 
@@ -38,6 +39,10 @@ code {
     font-family: "Source Code Pro", monospace;
     font-size: 0.85rem;
     hyphens: none;
+}
+
+:not(pre) > code {
+    color: var(--warning);
 }
 
 h1 {
