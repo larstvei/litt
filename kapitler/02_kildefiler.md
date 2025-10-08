@@ -180,7 +180,7 @@ uttrykk:
   og semikolon.
 
 `:symbol`{.keyword} `#"[^\s,^()\[\]{}\";]+"`{.string}
-: Symboler følger de samme reglene som nøkkelord, men uten kolon forran.
+: Symboler følger de samme reglene som nøkkelord, men uten kolon foran.
 
 `:open`{.keyword} `#"\(|\[|\{"`{.string}
 : Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
