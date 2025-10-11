@@ -531,33 +531,6 @@ illustrert i testen under.
 
 `litt.src-test/definition-name->str`{=litt}
 
-### Former til definisjoner
-
-Hver kodeblokk du har sett i dette kapittelet utgjør én *form* i
-Clojure. Felles for alle Lisp-er (språkfamilien Clojure er en del av) er
-at koden skrives som datastrukturer i språket selv. Parentesuttrykk
-`(...)` utgjør lister, hakeparentesuttrykk utgjør `[...]` vektorer og
-`{...}` krøllparenteser utgjør maps. Det gjør at det er svært enkelt å
-behandle Clojure-kode i Clojure!
-
-Gitt et navnerom og en form, ønsker vi hente ut definisjonsnavnet og
-representere det som et map på formen beskrevet over. Merk at vi
-utelater former som starter med noe annet enn et symbol, siden det
-umulig kan være en form som utgjør en definisjon.^[En vanlig
-konstruksjon som brukes på toppnivå, men ikke er en definisjon, er en
-`(comment ...)`-blokk, som ofte er nyttig i en interaktiv
-programmeringsflyt.]
-
-`litt.src/extract-definition-name`{=litt}
-
-Igjen bruker vi destrukturering for å få ut de tre første elementene av
-formen som er gitt som input. Funksjonen tar utgangspunkt i `{:ns
-ns-name}`, og tilføyer nøkkelen `:name` dersom definisjonen er noe annet
-enn en navneromsdeklarasjon, og tilføyer nøkkelen `:dispatch` dersom
-formen er en metode. Under er noen enkle tester for funksjonen.
-
-`litt.src-test/extract-definition-name`{=litt}
-
 ## Hente ut informasjon om en definisjon
 
 Så langt har vi hentet ut navnet til definisjonen, men vi ønsker også å
