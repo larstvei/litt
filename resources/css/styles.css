@@ -78,8 +78,6 @@ a:focus-visible {
 .left-right-definition-list-wrapper > dl > dt {
     display: flex;
     justify-content: space-between;
-    margin-top: 1rem;
-    margin-bottom: 0.25rem;
 }
 
 .footnote-ref {

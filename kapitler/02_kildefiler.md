@@ -132,64 +132,103 @@ uttrykk:
 
 ::: left-right-definition-list-wrapper
 
-`:whitespace`{.keyword} `#"[\s,]+"`{.string}
-: I Clojure behandles komma (`,`) som mellomrom. Det regulære uttrykket
-  fanger komma, samt ulike typer mellomrom og linjeskift med `\s`.
+`:whitespace`{.keyword} `#"[\s,]+"`
+: []{.empty}
 
-`:comment`{.keyword} `#";[^\n]*"`{.string}
-: Alt etter semikolon (`;`) på en linje behandles som en kommentar. Det
-  regulære uttrykket fanger semikolonet, etterfulgt av hva som helst
-  *bortsett fra* linjeskift med `[^\n]`.
+    I Clojure behandles komma (`,`) som mellomrom. Det regulære
+    uttrykket fanger komma, samt ulike typer mellomrom og linjeskift med
+    `\s`.
 
-`:meta`{.keyword} `#"\^"`{.string}
-: Clojure støtter å tilføye symboler og beholdere med
-  [*metadata*](https://clojure.org/reference/metadata), som er
-  informasjon som bæres med verdien, uten at det påvirker likhet eller
-  hashverdier. Ved å bruke symbolet `^`, så vil det som kommer etter
-  tolkes som metadata.
+`:comment`{.keyword} `#";[^\n]*"`
+: []{.empty}
 
-`:string`{.keyword} `#"\"(?:[^\"\\]++|\\.)*+\""`{.string}
-: En streng består av nesten hva som helst som forekommer mellom to
-  anførselstegn (`"`). En streng kan inneholde anførselstegn hvis det
-  forekommer direkte etter en omvendt skråstrek, altså `\"`. Vi fanger
-  dette med `\\.|[^\"]`, som uttrykker hva som helst som kommer etter en
-  omvendt skråstrek (dette inkluderer også et anførselstegn) eller hva
-  som helst som ikke er et anførselstegn. Om ikke det skulle være nok,
-  så er denne disjunksjonen pakket inn i et parentesuttrykk som innledes
-  av `?:`. Dette er fordi parentesuttrykk i regulære uttrykk gjør to
-  ting: det både *grupperer* og *fanger*. Betydningen av *gruppering* er
-  den samme som parenteser i alle ordinære matematiske disipliner.
-  Betydningen av *fanger* er at en kan senere hente ut delstrengen som
-  ble fanget av uttrykket innenfor parentesuttrykket. Ved å innlede et
-  parentesuttrykk med `?:` ber vi om at det som følger skal grupperes,
-  men *ikke* fanges, en såkalt ikke-fangende gruppe. Hvorfor vi ønsker
-  å unngå å fange innholdet av strengen blir klarere i neste seksjon.
+    Alt etter semikolon (`;`) på en linje behandles som en kommentar.
+    Det regulære uttrykket fanger semikolonet, etterfulgt av hva som
+    helst *bortsett fra* linjeskift med `[^\n]`.
 
-`:number`{.keyword} `#"-?\d+(?:\.\d+)?"`{.string}
-: Tall i Clojure er som i de fleste andre språk, altså litt mer
-  kompliserte enn man skulle tro. Vi gjør en forenkling her og ser vekk
-  fra tall som inneholder `E`, `N` eller `M` (som alle har en betydning
-  i Clojure), samt brøktall. Det regulære uttrykket fanger et valgfritt
-  minustegn, etterfulgt av sifre, etterfulgt av et valgfritt punktum med
-  noen ytterligere sifre.
+`:meta`{.keyword} `#"\^"`
+: []{.empty}
 
-`:keyword`{.keyword} `#":[^\s,^()\[\]{}\";]+"`{.string}
-: Et symbol som begynner med kolon (`:`) tolkes som et *nøkkelord* i
-  Clojure. Det regulære uttrykket fanger de fleste tegn som forekommer
-  etter et kolon, med unntak av blanke, ulike parenteser, anførselstegn
-  og semikolon.
+    Clojure støtter å tilføye symboler og beholdere med
+    [*metadata*](https://clojure.org/reference/metadata), som er
+    informasjon som bæres med verdien, uten at det påvirker likhet eller
+    hashverdier. Ved å bruke symbolet `^`, så vil det som kommer etter
+    tolkes som metadata.
 
-`:symbol`{.keyword} `#"[^\s,^()\[\]{}\";]+"`{.string}
-: Symboler følger de samme reglene som nøkkelord, men uten kolon foran.
+`:string`{.keyword} `#"\"(?:[^\"\\]++|\\.)*+\""`
+: []{.empty}
 
-`:open`{.keyword} `#"\(|\[|\{"`{.string}
-: Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
-  vanlige runde parenteser `()`, hakeparanteser `[]` eller
-  krøllparenteser `{}`. Det regulære uttrykket fanger *åpningen* av et
-  parentesuttrykk.
+    En streng består av nesten hva som helst som forekommer mellom to
+    anførselstegn (`"`). Uttrykket over er hentet rett fra [Perl sin
+    dokumentasjon for regulære
+    uttrykk](https://perldoc.perl.org/perlre#Quantifiers). I korte trekk
+    fanger det regulære uttrykket en streng som begynner og slutter med
+    anførselstegn og som inneholder hva som helst bortsett fra
+    anførselstegn -- med mindre anførselstegnet forekommer direkte etter
+    en omvendt skråstrek.
 
-`:close`{.keyword} `#"\)|\]|\}"`{.string}
-: Det regulære uttrykket fanger *lukkingen* av et parentesuttrykk.
+    Innholdet i strengen fanges av en disjunksjon (`|`) som er pakket
+    inn i et parentesuttrykk som innledes av `?:`. Dette er fordi
+    parentesuttrykk i regulære uttrykk gjør to ting: det både
+    *grupperer* og *fanger*. Betydningen av *gruppering* er den samme
+    som parenteser i alle ordinære matematiske disipliner. Betydningen
+    av *fanger* er at en kan senere hente ut delstrengen som ble fanget
+    av uttrykket innenfor parentesuttrykket. Ved å innlede et
+    parentesuttrykk med `?:` ber vi om at det som følger skal grupperes,
+    men *ikke* fanges, en såkalt ikke-fangende gruppe.
+
+    Den første disjunkten `[^\"\\]++` fanger alt som ikke er et
+    anførselstegn eller en omvendt skråstrek. Kvantoren `++` er en
+    «possessiv» variant av kvantoren `+` (som fanger én eller flere),
+    som gjør at vi vil fanger så mange symboler som mulig og forhindre
+    backtracking.^[En god forklaring på possessive kvantorer kan finnes
+    i [manualen til
+    GLib](https://gnome.pages.gitlab.gnome.org/libsoup/glib/glib-regex-syntax.html#id-1.5.25.15).]
+    ^[I en tidligere versjon brukte vi en mer naiv variant av uttrykket,
+    som ikke benyttet seg av possessive kvantorer, som ledet til at
+    uttrykket ga `StackOverflow` for lange strenger.] Den andre
+    disjunkten `\\.` fanger hva som helst som følger etter en omvendt
+    skråstrek -- merk at dette inkluderer `\"`.
+
+    Hele disjunksjonen matches vilkårlig ganger, og igjen med en
+    possessiv kvantor for å unngå backtracking.
+
+`:number`{.keyword} `#"-?\d+(?:\.\d+)?"`
+: []{.empty}
+
+    Tall i Clojure er som i de fleste andre språk, altså litt mer
+    kompliserte enn man skulle tro. Vi gjør en forenkling her og ser
+    vekk fra tall som inneholder `E`, `N` eller `M` (som alle har en
+    betydning i Clojure), samt brøktall. Det regulære uttrykket fanger
+    et valgfritt minustegn, etterfulgt av sifre, etterfulgt av et
+    valgfritt punktum med noen ytterligere sifre.
+
+`:keyword`{.keyword} `#":[^\s,^()\[\]{}\";]+"`
+: []{.empty}
+
+    Et symbol som begynner med kolon (`:`) tolkes som et *nøkkelord* i
+    Clojure. Det regulære uttrykket fanger de fleste tegn som forekommer
+    etter et kolon, med unntak av blanke, ulike parenteser, anførselstegn
+    og semikolon.
+
+`:symbol`{.keyword} `#"[^\s,^()\[\]{}\";]+"`
+: []{.empty}
+
+    Symboler følger de samme reglene som nøkkelord, men uten kolon
+    foran.
+
+`:open`{.keyword} `#"\(|\[|\{"`
+: []{.empty}
+
+    Strukturen av Clojure-kode er gitt av parentesuttrykk, som kan være
+    vanlige runde parenteser `()`, hakeparanteser `[]` eller
+    krøllparenteser `{}`. Det regulære uttrykket fanger *åpningen* av et
+    parentesuttrykk.
+
+`:close`{.keyword} `#"\)|\]|\}"`
+: []{.empty}
+
+    Det regulære uttrykket fanger *lukkingen* av et parentesuttrykk.
 
 :::
 
